@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES2015",
+    "removeComments": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "lib": ["es6"],
+    "types": [
+      "jest",
+      "node"
+    ],
+    "typeRoots": [
+      "node_modules/@types",
+      "types"
+    ],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": ".temp"
+  },
+  "include": [
+    "src/**/*.ts",
+    "types/**/*.d.ts"
+  ],
+  "exclude": [
+    "test",
+    "node_modules"
+  ]
+}

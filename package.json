@@ -1,0 +1,83 @@
+{
+  "name": "sdlint",
+  "version": "0.0.1",
+  "description": "SDLint is a tool for find problems in your structured data.",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "bin": {
+    "sdlint": "bin/lint.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tkskto/sdlint.git"
+  },
+  "keywords": [],
+  "author": "Takeshi Kato <tkskto@gmail.com> (https://github.com/tkskto)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tkskto/sdlint/issues"
+  },
+  "homepage": "https://github.com/tkskto/sdlint#readme",
+  "scripts": {
+    "dev": "tsc -p tsconfig.json -w",
+    "build": "tsc -p tsconfig.json && rollup --config",
+    "lint": "eslint -c .eslintrc.json src",
+    "test": "npm run test:base",
+    "test:base": "jest",
+    "test:cover": "jest --coverage",
+    "test:update": "jest --updateSnapshot",
+    "tmp": "node dist/index.js -c ./.sdlintrc"
+  },
+  "dependencies": {
+    "ajv": "8.6.3",
+    "commander": "8.3.0",
+    "globby": "11.0.4",
+    "node-html-parser": "5.1.0",
+    "yaml": "1.10.2"
+  },
+  "devDependencies": {
+    "@mitsue/eslint-config": "4.0.1",
+    "@rollup/plugin-commonjs": "21.0.1",
+    "@rollup/plugin-json": "4.1.0",
+    "@rollup/plugin-node-resolve": "13.0.6",
+    "@types/jest": "27.0.2",
+    "@types/node": "16.11.6",
+    "@typescript-eslint/eslint-plugin": "5.3.0",
+    "@typescript-eslint/parser": "5.3.0",
+    "eslint": "7.32.0",
+    "husky": "7.0.4",
+    "jest": "27.3.1",
+    "lint-staged": "11.2.6",
+    "rollup": "2.59.0",
+    "rollup-plugin-license": "2.6.0",
+    "ts-jest": "27.0.7",
+    "typescript": "4.4.4"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npm run lint"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "tsconfig.json"
+      }
+    },
+    "testMatch": [
+      "**/test/*.test.ts"
+    ]
+  }
+}

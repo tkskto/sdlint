@@ -1,0 +1,9 @@
+export const SUPPORT_TYPE_NAME = {
+    BREADCRUMB_LIST: 'BreadcrumbList',
+    JOB_POSTING: 'JobPosting',
+};
+
+export const SUPPORT_TYPE_LIST = [
+    SUPPORT_TYPE_NAME.BREADCRUMB_LIST,
+    SUPPORT_TYPE_NAME.JOB_POSTING,
+];

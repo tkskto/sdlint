@@ -1,0 +1,22 @@
+{
+  "root": true,
+  "extends": [
+    "@mitsue",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "indent": [2, 4],
+    "multiline-comment-style": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    "no-console": 0,
+    "object-property-newline": [2, {"allowAllPropertiesOnSameLine": true}],
+    "class-methods-use-this": 0
+  }
+}

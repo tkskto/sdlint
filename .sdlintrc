@@ -1,0 +1,6 @@
+vocabularies: 'https://schema.org/'
+syntax: 'JSON-LD'
+charset: 'utf-8'
+include:
+    - 'test/**/**.html'
+exclude:
