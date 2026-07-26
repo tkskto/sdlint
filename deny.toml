@@ -1,0 +1,21 @@
+[advisories]
+yanked = "deny"
+unmaintained = "workspace"
+unsound = "workspace"
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+
+[licenses]
+include-dev = true
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "Unlicense",
+]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+required-git-spec = "rev"

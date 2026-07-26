@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="system">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone=no, email=no, address=no">
+    <meta name="description" content="ミツエーリンクスのコラム「個人のAI活用から、チームでエージェントと協働する組織へ」です。">
+    <title>個人のAI活用から、チームでエージェントと協働する組織へ | コラム | ミツエーリンクス</title>
+
+    <!-- テーマ適用スクリプト -->
+    <script src="/assets/js/setDisplayMode.js"></script>
+
+    <!-- Google Tag Manager -->
+    <script>
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src= 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-T8C9FFW'); // eslint-disable-line
+    </script>
+    <!-- End Google Tag Manager -->
+    <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Organization","url":"https://www.mitsue.co.jp/","logo":"https://www.mitsue.co.jp/assets/img/image_logo.webp"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://www.mitsue.co.jp/"},{"@type":"ListItem","position":2,"name":"ナレッジ","item":"https://www.mitsue.co.jp/knowledge/"},{"@type":"ListItem","position":3,"name":"コラム","item":"https://www.mitsue.co.jp/knowledge/column/"},{"@type":"ListItem","position":4,"name":"個人のAI活用から、チームでエージェントと協働する組織へ","item":"https://www.mitsue.co.jp/knowledge/column/20260724.html"}]},{"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mitsue.co.jp/knowledge/column/20260724.html"},"headline":"個人のAI活用から、チームでエージェントと協働する組織へ","datePublished":"2026-07-24","dateModified":"2026-07-24","inLanguage":"ja-JP","articleSection":"コラム","author":{"@type":"Person","jobTitle":"X-tech推進本部 副本部長","name":"加藤 健志"},"publisher":{"@type":"Organization","name":"ミツエーリンクス","url":"https://www.mitsue.co.jp/","logo":"https://www.mitsue.co.jp/assets/img/image_logo.webp"}}]</script>
+
+    <meta property="og:title" content="個人のAI活用から、チームでエージェントと協働する組織へ | コラム | ミツエーリンクス">
+    <meta property="og:description" content="ミツエーリンクスのコラム「個人のAI活用から、チームでエージェントと協働する組織へ」です。"><meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.mitsue.co.jp/knowledge/column/20260724.html">
+    <meta property="og:image" content="https://www.mitsue.co.jp/assets/img/og/20260724_column.jpg">
+    <meta property="og:locale" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:site_name" content="ミツエーリンクス">
+    <meta name="twitter:creator" content="@Mitsue_Links">
+
+    <link rel="stylesheet" href="/assets/css/C_Bdg-KH.css">
+    <link rel="stylesheet" href="/assets/css/CTa-Grfd.css">
+    <style>.pageTitleArea.-mainVisual .breadcrumbArea{position:absolute;z-index:var(--z-index-module-10)}
+    </style>
+    <link rel="stylesheet" href="/assets/css/D-5yB9XE.css">
+    <style>.pageTitleArea__inner:where(.astro-w3kumz4o)>:where(.astro-w3kumz4o):first-child{margin-top:0}.pageTitleArea__inner:where(.astro-w3kumz4o)>:where(.astro-w3kumz4o):last-child{margin-bottom:0}.pageTitleArea:where(.astro-w3kumz4o){margin-bottom:calc(var(--size-spacing-20) * -1);position:relative}.pageTitleArea__inner:where(.astro-w3kumz4o){margin-left:var(--size-margin-content-narrow);margin-right:var(--size-margin-content-narrow);padding-bottom:var(--size-spacing-20)}.pageTitleArea__picture:where(.astro-w3kumz4o){display:block;max-height:260px}.pageTitleArea__picture:where(.astro-w3kumz4o):after{background-image:linear-gradient(var(--color-background-filter),var(--color-background-filter));background-repeat:no-repeat;content:"";display:block;inset:0;position:absolute}.pageTitleArea__image:where(.astro-w3kumz4o){height:100%;max-height:260px;object-fit:cover;width:100%}@media print,screen and (min-width: 769px){.pageTitleArea:where(.astro-w3kumz4o){margin-bottom:calc(var(--size-spacing-40) * -1)}.pageTitleArea__inner:where(.astro-w3kumz4o){margin-left:var(--size-margin-content-wide);margin-right:var(--size-margin-content-wide);padding-bottom:var(--size-spacing-40)}.pageTitleArea__picture:where(.astro-w3kumz4o){max-height:320px}.pageTitleArea__image:where(.astro-w3kumz4o){max-height:320px}}@media screen and (min-width: 1281px){.pageTitleArea__picture:where(.astro-w3kumz4o){max-height:480px}.pageTitleArea__image:where(.astro-w3kumz4o){max-height:480px}}
+    </style>
+    <link rel="stylesheet" href="/assets/css/D-JcSin-.css">
+    <style>.breadcrumbArea__inner:where(.astro-vnstv4b6){margin:auto var(--size-margin-content-narrow);min-width:calc(var(--size-breakpoint-min) - var(--size-margin-content-narrow) * 2)}@media print,screen and (min-width: 769px){.breadcrumbArea__inner:where(.astro-vnstv4b6){margin:auto var(--size-margin-content-wide)}}.breadcrumbArea:where(.astro-vnstv4b6){width:100%}.breadcrumbArea__inner:where(.astro-vnstv4b6){padding-top:var(--size-spacing-10)}.breadcrumb__list:where(.astro-vnstv4b6){align-items:center;display:flex;flex-wrap:wrap;gap:0 var(--size-spacing-20);justify-content:flex-end}.breadcrumb__item:where(.astro-vnstv4b6){flex:0 0 auto;max-width:100%;position:relative}.breadcrumb__item:where(.astro-vnstv4b6):after{border-right:var(--border-arrow);border-top:var(--border-arrow);content:"";display:inline-block;height:6px;position:absolute;right:calc(var(--size-spacing-10) * -1);rotate:var(--transform-rotate-45);top:50%;translate:0 -50%;width:6px}.breadcrumb__item:where(.astro-vnstv4b6):last-child:after{content:none}.breadcrumb__link:where(.astro-vnstv4b6){display:block;font-size:var(--font-size-10)}.breadcrumb__link:where(.astro-vnstv4b6):not([aria-current]){text-decoration:underline}.breadcrumb__link:where(.astro-vnstv4b6)[aria-current]{pointer-events:none}.breadcrumb__link:where(.astro-vnstv4b6):not([href]){text-decoration:none}.breadcrumb:where(.astro-vnstv4b6).-dark .breadcrumb__item:where(.astro-vnstv4b6),.breadcrumb:where(.astro-vnstv4b6).-dark .breadcrumb__link:where(.astro-vnstv4b6){color:var(--color-font-white)}.breadcrumb:where(.astro-vnstv4b6).-dark .breadcrumb__item:where(.astro-vnstv4b6){text-shadow:var(--shadow-text-2)}@media print,screen and (min-width: 769px){.breadcrumbArea__inner:where(.astro-vnstv4b6){padding-top:var(--size-spacing-20)}.breadcrumb__link:where(.astro-vnstv4b6){font-size:var(--font-size-12)}}@media screen and (any-hover: hover){.breadcrumb__link:where(.astro-vnstv4b6):hover,.breadcrumb__link:where(.astro-vnstv4b6):focus-visible{text-decoration:none}}
+    .level1Column:where(.astro-vpnxpeor){margin-top:var(--size-spacing-80)}.level1Column__inner:where(.astro-vpnxpeor){padding-bottom:var(--size-spacing-30);position:relative}.level1Column__inner:where(.astro-vpnxpeor):before{background-image:url("data:image/svg+xml; charset=utf-8, %3csvg%20xmlns%3d%22http%3a%2f%2fwww%2ew3%2eorg%2f2000%2fsvg%22%20viewBox%3d%220%200%2043%204%22%3e%3cg%20stroke%2dlinecap%3d%22round%22%20stroke%2dwidth%3d%224%22%20fill%3d%22none%22%3e%3cpath%20stroke%3d%22%2356a580%22%20d%3d%22M2%202h8%22%2f%3e%3cpath%20stroke%3d%22%23e65c63%22%20d%3d%22M10%202h12%22%2f%3e%3cpath%20stroke%3d%22%236480cc%22%20d%3d%22M23%202h18%22%2f%3e%3c%2fg%3e%3c%2fsvg%3e");background-position:center;background-repeat:no-repeat;background-size:43px 4px;height:4px;width:43px;bottom:-2px;content:"";display:inline-block;left:0;position:absolute;z-index:var(--z-index-module-10)}.level1Column__date:where(.astro-vpnxpeor){display:block;font-size:var(--font-size-12)}.level1Column__heading:where(.astro-vpnxpeor){display:block;font-size:var(--font-size-heading-1-narrow);margin-top:var(--size-spacing-10)}.level1Column__author:where(.astro-vpnxpeor){display:block;font-weight:var(--font-weight-medium);margin-top:var(--size-spacing-20)}.level1Column__authorAbout:where(.astro-vpnxpeor),.level1Column__authorName:where(.astro-vpnxpeor){display:block}@media print,screen and (min-width: 769px){.level1Column:where(.astro-vpnxpeor){margin-top:var(--size-spacing-120)}.level1Column__inner:where(.astro-vpnxpeor){padding-bottom:var(--size-spacing-60)}.level1Column__date:where(.astro-vpnxpeor){font-size:var(--font-size-16)}.level1Column__heading:where(.astro-vpnxpeor){font-size:var(--font-size-heading-1-wide);margin-top:var(--size-spacing-20)}.level1Column__author:where(.astro-vpnxpeor){margin-top:var(--size-spacing-30)}}
+    </style>
+    <link rel="stylesheet" href="/assets/css/DLzhKCh1.css">
+    <style>.relation:where(.astro-i4gtjoua){--relation-background-color: var(--color-background-7);background-color:var(--relation-background-color);border-radius:var(--border-radius-20);margin-top:var(--size-spacing-30)}.relation__inner:where(.astro-i4gtjoua){display:flex;flex-direction:column;gap:var(--size-spacing-20) var(--size-spacing-60);padding:var(--size-spacing-40) var(--size-spacing-30) var(--size-spacing-60)}@media screen and (prefers-color-scheme: dark){[data-theme=system] .relation:where(.astro-i4gtjoua){--relation-background-color: var(--color-background-2)}}@media print,screen and (min-width: 769px){.relation:where(.astro-i4gtjoua){border-radius:var(--border-radius-40);margin-top:var(--size-spacing-60)}.relation__inner:where(.astro-i4gtjoua){flex-flow:row wrap;padding:var(--size-spacing-60) var(--size-spacing-60) var(--size-spacing-80)}}[data-theme=dark] .relation:where(.astro-i4gtjoua){--relation-background-color: var(--color-background-2)}
+    .relation__header:where(.astro-4iosn3fm){flex:0 0 auto;max-width:100%}.relation__heading:where(.astro-4iosn3fm){font-size:var(--font-size-heading-2-narrow)}@media print,screen and (min-width: 769px){.relation__heading:where(.astro-4iosn3fm){font-size:var(--font-size-heading-2-wide)}}
+    .relation__content>:first-child{margin-top:0}.relation__content>:last-child{margin-bottom:0}
+    .linkList2:where(.astro-z2ugyy5n){margin-top:var(--size-spacing-20)}@media print,screen and (min-width: 769px){.linkList2:where(.astro-z2ugyy5n){margin-top:var(--size-spacing-30)}}
+    .relation__content:where(.astro-5gzscl2u){flex:1 1 auto;max-width:100%}@media print,screen and (min-width: 769px){.relation__content:where(.astro-5gzscl2u){padding-top:var(--size-spacing-10)}}
+    .linkList2.-dark .linkList2__link{color:var(--color-link-text-normal-dark)}.linkList2.-dark .linkList2__link:before{background-color:var(--color-link-bullet-normal-dark)}.linkList2.-dark .linkList2__link:after{border-color:var(--color-link-bullet-arrow-normal-dark)}
+    @media only screen and (prefers-color-scheme: dark){[data-theme=system] .linkList2.-dark .label{border-color:currentColor}}[data-theme=dark] .linkList2.-dark .label{border-color:currentColor}
+    .linkList2__item:where(.astro-nbzkegwc):not(:first-child){margin-top:var(--size-spacing-20)}.linkList2__link:where(.astro-nbzkegwc){position:relative}.linkList2__link:where(.astro-nbzkegwc):before,.linkList2__link:where(.astro-nbzkegwc):after{position:absolute}.linkList2__link:where(.astro-nbzkegwc):before{background-color:var(--base-color-link-bullet);border-radius:var(--border-radius-round);content:"";display:inline-block;height:36px;width:36px}.linkList2__link:where(.astro-nbzkegwc):after{content:"";display:inline-block;height:6px;rotate:var(--transform-rotate-45);vertical-align:middle;width:6px;border-right:var(--border-bullet-arrow);border-top:var(--border-bullet-arrow);color:var(--base-color-link-bullet-arrow)}.linkList2__link:where(.astro-nbzkegwc){padding-left:var(--size-spacing-50)}.linkList2__link:where(.astro-nbzkegwc):before{left:0}.linkList2__link:where(.astro-nbzkegwc):after{left:15px}@media screen and (any-hover: hover){.linkList2__link:where(.astro-nbzkegwc):after{transition:translate var(--transition-hover)}.linkList2__link:where(.astro-nbzkegwc):hover:after,.linkList2__link:where(.astro-nbzkegwc):focus-visible:after{translate:var(--transform-translate-x-arrow) 0}}.linkList2__link:where(.astro-nbzkegwc){display:inline-block}.linkList2__link:where(.astro-nbzkegwc):before{top:-4px}.linkList2__link:where(.astro-nbzkegwc):after{top:10px}@media print,screen and (min-width: 769px){.linkList2__link:where(.astro-nbzkegwc):before{top:-1px}.linkList2__link:where(.astro-nbzkegwc):after{top:14px}}
+    .label:where(.astro-g5uuair3){--label-background-color: var(--color-background-normal);--label-border-color: var(--color-border-2);--label-color: var(--color-font-label);background-color:var(--label-background-color);border:var(--border-width-1) var(--border-style-solid) var(--label-border-color);border-radius:var(--border-radius-10);color:var(--label-color);display:inline-block;flex:0 0 auto;font-size:var(--font-size-14);line-height:1;margin-left:var(--size-spacing-10);max-width:100%;padding:8px;text-align:center}.label:where(.astro-g5uuair3).-expired{--label-background-color: var(--color-background-normal);border-style:var(--border-style-dashed)}.label:where(.astro-g5uuair3).-available{--label-background-color: var(--color-background-label);--label-border-color: var(--color-background-label);--label-color: var(--color-font-white)}.label:where(.astro-g5uuair3).-required{--label-background-color: transparent;--label-border-color: var(--color-important);--label-color: var(--color-important);font-size:var(--font-size-12)}.label:where(.astro-g5uuair3).-free,.label:where(.astro-g5uuair3).-freeWatch{--label-background-color: var(--color-point-green);--label-border-color: var(--color-point-green);--label-color: var(--color-font-white)}.label:where(.astro-g5uuair3).-online,.label:where(.astro-g5uuair3).-real,.label:where(.astro-g5uuair3).-archive{--label-background-color: var(--color-background-5);--label-border-color: var(--color-background-5);--label-color: var(--color-font-white)}@media screen and (prefers-color-scheme: dark){[data-theme=system] .label:where(.astro-g5uuair3){--label-background-color: transparent;--label-border-color: var(--color-border-2-dark);--label-color: var(--color-font-label-dark)}[data-theme=system] .label:where(.astro-g5uuair3).-expired{--label-background-color: transparent}[data-theme=system] .label:where(.astro-g5uuair3).-required{--label-border-color: var(--color-font-important-dark);--label-color: var(--color-font-important-dark)}[data-theme=system] .label:where(.astro-g5uuair3).-free,[data-theme=system] .label:where(.astro-g5uuair3).-freeWatch{--label-background-color: var(--color-important);--label-border-color: var(--color-important)}}@media print,screen and (min-width: 769px){.label:where(.astro-g5uuair3){padding:10px}.label:where(.astro-g5uuair3).-required{font-size:var(--font-size-14)}}[data-theme=dark] .label:where(.astro-g5uuair3){--label-background-color: transparent;--label-border-color: var(--color-border-2-dark);--label-color: var(--color-font-label-dark)}[data-theme=dark] .label:where(.astro-g5uuair3).-expired{--label-background-color: transparent}[data-theme=dark] .label:where(.astro-g5uuair3).-available{--label-background-color: var(--color-background-label);--label-border-color: var(--color-background-label);--label-color: var(--color-font-white)}[data-theme=dark] .label:where(.astro-g5uuair3).-required{--label-border-color: var(--color-font-important-dark);--label-color: var(--color-font-important-dark)}[data-theme=dark] .label:where(.astro-g5uuair3).-free,[data-theme=dark] .label:where(.astro-g5uuair3).-freeWatch{--label-background-color: var(--color-important);--label-border-color: var(--color-important)}[data-theme=dark] .label:where(.astro-g5uuair3).-online,[data-theme=dark] .label:where(.astro-g5uuair3).-real{--label-background-color: var(--color-background-5);--label-border-color: var(--color-background-5);--label-color: var(--color-font-white)}
+    .navigationLink:where(.astro-q43nw3ck){--navigation-link-border-color: var(--color-border-normal);border-top:var(--border-width-3) var(--border-style-solid) var(--navigation-link-border-color);margin-top:var(--size-spacing-60);text-align:center}@media screen and (prefers-color-scheme: dark){[data-theme=system] .navigationLink:where(.astro-q43nw3ck){--navigation-link-border-color: var(--color-border-normal-dark)}}@media print,screen and (min-width: 769px){.navigationLink:where(.astro-q43nw3ck){margin-top:var(--size-spacing-120)}.navigationLink__list:where(.astro-q43nw3ck){align-items:center;display:flex;justify-content:center;margin-top:var(--size-spacing-20)}}[data-theme=dark] .navigationLink:where(.astro-q43nw3ck){--navigation-link-border-color: var(--color-border-normal-dark)}
+    .navigationLink__item{--navigation-link-item-border-color: var(--color-border-normal)}.navigationLink__item+.navigationLink__item{border-top:var(--border-width-1) var(--border-style-solid) var(--navigation-link-item-border-color)}@media screen and (prefers-color-scheme: dark){[data-theme=system] .navigationLink__item{--navigation-link-item-border-color: var(--color-border-normal-dark)}}@media print,screen and (min-width: 769px){.navigationLink__item+.navigationLink__item{border-top:0;border-left:var(--border-width-1) var(--border-style-solid) var(--navigation-link-item-border-color)}}[data-theme=dark] .navigationLink__item{--navigation-link-item-border-color: var(--color-border-normal-dark)}
+    </style>
+    <link rel="stylesheet" href="/assets/css/BfvgQeBA.css">
+    <style>.navigationLink__link:where(.astro-ho5ossvi){display:flex;flex-direction:column;gap:var(--size-spacing-8);padding:var(--size-spacing-20) var(--size-spacing-50)}.navigationLink__label:where(.astro-ho5ossvi){flex:1 1 100%;font-size:var(--font-size-13)}.navigationLink__label:where(.astro-ho5ossvi) b:where(.astro-ho5ossvi){font-weight:var(--font-weight-medium)}.navigationLink__title:where(.astro-ho5ossvi){flex:1 1 100%}@media print,screen and (min-width: 769px){.navigationLink__item:where(.astro-ho5ossvi){flex:1 1 100%}}@media screen and (any-hover: hover){.navigationLink__link:where(.astro-ho5ossvi):any-link:hover,.navigationLink__link:where(.astro-ho5ossvi):any-link:focus-visible{text-decoration:underline}}.navigationLink__link:where(.astro-ho5ossvi){position:relative}.navigationLink__link:where(.astro-ho5ossvi):before,.navigationLink__link:where(.astro-ho5ossvi):after{translate:0 -50%;top:50%;position:absolute}.navigationLink__link:where(.astro-ho5ossvi):before{background-color:var(--base-color-link-bullet);border-radius:var(--border-radius-round);content:"";display:inline-block;height:36px;width:36px}.navigationLink__link:where(.astro-ho5ossvi):after{content:"";display:inline-block;height:6px;rotate:var(--transform-rotate-45);vertical-align:middle;width:6px;border-right:var(--border-bullet-arrow);border-top:var(--border-bullet-arrow);color:var(--base-color-link-bullet-arrow)}.navigationLink__link:where(.astro-ho5ossvi){padding-right:var(--size-spacing-50)}.navigationLink__link:where(.astro-ho5ossvi):before{right:0}.navigationLink__link:where(.astro-ho5ossvi):after{right:15px}@media screen and (any-hover: hover){.navigationLink__link:where(.astro-ho5ossvi):after{transition:translate var(--transition-hover)}.navigationLink__link:where(.astro-ho5ossvi):hover:after,.navigationLink__link:where(.astro-ho5ossvi):focus-visible:after{translate:var(--transform-translate-x-arrow) -50%}}
+    .navigationLink__link:where(.astro-6jkqpxkm){display:flex;flex-direction:column;gap:var(--size-spacing-8);padding:var(--size-spacing-20) var(--size-spacing-50)}.navigationLink__label:where(.astro-6jkqpxkm){flex:1 1 100%;font-size:var(--font-size-13)}.navigationLink__label:where(.astro-6jkqpxkm) b:where(.astro-6jkqpxkm){font-weight:var(--font-weight-medium)}.navigationLink__title:where(.astro-6jkqpxkm){flex:1 1 100%}@media print,screen and (min-width: 769px){.navigationLink__item:where(.astro-6jkqpxkm){flex:1 1 100%}}@media screen and (any-hover: hover){.navigationLink__link:where(.astro-6jkqpxkm):any-link:hover,.navigationLink__link:where(.astro-6jkqpxkm):any-link:focus-visible{text-decoration:underline}}.navigationLink__link:where(.astro-6jkqpxkm){position:relative}.navigationLink__link:where(.astro-6jkqpxkm):before,.navigationLink__link:where(.astro-6jkqpxkm):after{translate:0 -50%;top:50%;position:absolute}.navigationLink__link:where(.astro-6jkqpxkm):before{background-color:var(--base-color-link-bullet);border-radius:var(--border-radius-round);content:"";display:inline-block;height:36px;width:36px}.navigationLink__link:where(.astro-6jkqpxkm):after{content:"";display:inline-block;height:6px;rotate:var(--transform-rotate-45);vertical-align:middle;width:6px;border-bottom:var(--border-bullet-arrow);border-left:var(--border-bullet-arrow);color:var(--base-color-link-bullet-arrow)}.navigationLink__link:where(.astro-6jkqpxkm){padding-left:var(--size-spacing-50)}.navigationLink__link:where(.astro-6jkqpxkm):before{left:0}.navigationLink__link:where(.astro-6jkqpxkm):after{left:15px}@media screen and (any-hover: hover){.navigationLink__link:where(.astro-6jkqpxkm):after{transition:translate var(--transition-hover)}.navigationLink__link:where(.astro-6jkqpxkm):hover:after,.navigationLink__link:where(.astro-6jkqpxkm):focus-visible:after{translate:calc(var(--transform-translate-x-arrow) * -1) -50%}}
+    </style></head>
+<body id="top">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T8C9FFW" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+<header class="header js-sticky astro-u5ernz6l">
+    <div class="header__inner fn-sticky__content astro-u5ernz6l">
+
+        <div class="logo astro-d7kf2mv5">
+            <a href="/" class="logo__link astro-d7kf2mv5">
+
+	<span class="corporateLogoMini astro-ktt6yw7h">
+		<svg class="svg astro-ktt6yw7h" xmlns="http://www.w3.org/2000/svg" width="185.594" height="31.996" viewBox="0 0 185.594 31.996">
+			<title>Mitsue-Links</title>
+			<path class="parts kindness astro-ktt6yw7h" d="M10.68,18.44A13.957,13.957,0,0,0,4.2,22.25C.65,25.67-.97,29.76.6,31.39c1.06,1.1,3.3.79,5.74-.58-1.88-2.39,0-7.61,4.35-12.37" transform="translate(0 -0.06)" fill="#209134"></path>
+			<path class="parts passion astro-ktt6yw7h" d="M22.58,11.1c-2.99.35-6.95,2.48-10.54,5.93-.48.46-.93.93-1.36,1.4C6.33,23.19,4.45,28.41,6.33,30.8c.06.07.11.16.18.23,1.78,1.85,5.74,1.1,9.89-1.55-3-3.43-.28-11.25,6.18-18.38" transform="translate(0 -0.06)" fill="#df1720"></path>
+			<path class="parts strength astro-ktt6yw7h" d="M24.73,8.863c-.76.729-1.47,1.467-2.15,2.226C16.13,18.215,13.4,26.01,16.4,29.434c.05.05.08.11.13.16,2.59,2.695,8.33,1.657,14.37-2.116C28.12,23.645,30.61,14.8,37,6.707A40.43,40.43,0,0,1,43.4.2C38.95-.878,31.39,2.475,24.73,8.863" transform="translate(0 0)" fill="#325098"></path>
+			<path class="parts text astro-ktt6yw7h" d="M43.33,27.23V14.18h5.15l2.3,8.15,2.31-8.15h5.15V27.23H54.41V23.25l.06-2.03.21-2.36h-.03l-2.38,8.37H49.3l-2.38-8.37h-.04l.18,1.93.09,2.03v4.41Z" transform="translate(-0.088 -0.045)"></path>
+			<rect class="parts text astro-ktt6yw7h" width="4.28" height="13.05" transform="translate(60.205 14.135)"></rect>
+			<path class="parts text astro-ktt6yw7h" d="M66.56,14.18H78.52v3.43H74.68v9.62H70.4V17.61H66.56Z" transform="translate(-0.133 -0.045)"></path>
+			<path class="parts text astro-ktt6yw7h" d="M86.79,17.97a1.094,1.094,0,0,0-.62-.87,2.421,2.421,0,0,0-1.11-.23c-.95,0-1.37.27-1.37.74,0,1.95,7.51.74,7.51,5.46,0,3.02-2.51,4.49-6.1,4.49s-5.68-2.01-5.77-4.36h4.08a1.423,1.423,0,0,0,.74,1.03,2.308,2.308,0,0,0,1.21.32c1.07,0,1.78-.34,1.78-.96,0-1.97-7.51-.61-7.51-5.58,0-2.76,2.38-4.15,5.65-4.15,3.63,0,5.27,1.84,5.58,4.11H86.81Z" transform="translate(-0.158 -0.06)"></path>
+			<path class="parts text astro-ktt6yw7h" d="M93.04,14.02h4.28v7.8c0,1.29.25,2.39,2.02,2.39,1.54,0,1.99-.98,1.99-2.39v-7.8h4.29v7.37c0,4.18-1.94,6.01-6.28,6.01-4.05,0-6.3-1.54-6.3-6.02V14.03Z" transform="translate(-0.186 -0.06)"></path>
+			<path class="parts text astro-ktt6yw7h" d="M107.14,27.23V14.18h10.65v3.04h-6.36v1.9h5.38v3.04h-5.38v2.03h6.61v3.04Z" transform="translate(-0.212 -0.045)"></path>
+			<rect class="parts text astro-ktt6yw7h" width="4.86" height="3.29" transform="translate(118.922 19.02)"></rect>
+			<path class="parts text astro-ktt6yw7h" d="M126.25,27.23V14.18h4.29V24.19h5.86v3.04Z" transform="translate(-0.249 -0.045)"></path>
+			<rect class="parts text astro-ktt6yw7h" width="4.28" height="13.05" transform="translate(138.066 14.135)"></rect>
+			<path class="parts text astro-ktt6yw7h" d="M153.94,21.3l-.17-2.97V14.18h4.08V27.23h-3.99l-4.68-7.11.16,2.98v4.13h-4.07V14.18h3.98Z" transform="translate(-0.29 -0.045)"></path>
+			<path class="parts text astro-ktt6yw7h" d="M160.46,14.18h4.28v4.23l3.75-4.23h5.02l-4.76,4.91,5.27,8.14h-5.13l-3.13-5.2-1.02,1.07v4.13h-4.28Z" transform="translate(-0.346 -0.045)"></path>
+			<path class="parts text astro-ktt6yw7h" d="M181.54,17.97a1.094,1.094,0,0,0-.62-.87,2.464,2.464,0,0,0-1.12-.23c-.95,0-1.37.27-1.37.74,0,1.95,7.51.74,7.51,5.46,0,3.02-2.51,4.49-6.1,4.49s-5.68-2.01-5.77-4.36h4.08a1.437,1.437,0,0,0,.73,1.03,2.308,2.308,0,0,0,1.21.32c1.07,0,1.78-.34,1.78-.96,0-1.97-7.51-.61-7.51-5.58,0-2.76,2.38-4.15,5.65-4.15,3.63,0,5.27,1.84,5.58,4.11h-4.04Z" transform="translate(-0.346 -0.06)"></path>
+		</svg>
+	</span>
+
+
+
+            </a>
+        </div>
+
+
+
+
+
+        <div class="globalNavigation js-menu astro-57vyd5gk">
+            <template class="fn-menu__templateButton astro-57vyd5gk">
+                <button type="button" class="globalNavigation__button fn-menu__button astro-57vyd5gk"><span class="globalNavigation__buttonText fn-menu__buttonAltText astro-57vyd5gk">開く</span></button>
+            </template>
+
+            <div class="globalNavigation__body fn-menu__content astro-57vyd5gk">
+
+                <nav class="globalNavigationList astro-zgf4unrx" aria-label="Global">
+                    <div class="globalNavigationList__inner astro-zgf4unrx">
+                        <ul class="globalNavigationList__list astro-zgf4unrx">
+                            <li class="globalNavigationList__item astro-zgf4unrx">
+                                <a href="/service/" class="globalNavigationList__link astro-zgf4unrx">
+                                    <span class="globalNavigationList__icon astro-zgf4unrx"><svg width='36' height='32' viewBox='0 0 36 32' aria-hidden='true' class='globalNavigationList__iconImage'><g><path d='M27,16a7,7,0,1,1-7,7,7.008,7.008,0,0,1,7-7m0-2a9,9,0,1,0,9,9,9,9,0,0,0-9-9'/><path d='M27,16c1.2,0,2,2.813,2,7s-.8,7-2,7-2-2.813-2-7,.8-7,2-7m0-2c-3,0-4,4.029-4,9s1,9,4,9,4-4.029,4-9-1-9-4-9'/><path d='M18,23H5a5,5,0,0,1-5-5V5A5,5,0,0,1,5,0H26a5,5,0,0,1,5,5v9.7a1,1,0,1,1-2,0V5a3,3,0,0,0-3-3H5A3,3,0,0,0,2,5V18a3,3,0,0,0,3,3H18a1,1,0,0,1,0,2Z'/><path d='M14,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H14a1,1,0,0,1,1,1A1,1,0,0,1,14,1Z' transform='translate(20 21)'/><path d='M14,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H14a1,1,0,0,1,1,1A1,1,0,0,1,14,1Z' transform='translate(20 26)'/><path d='M6,5A1,1,0,1,1,5,4,1,1,0,0,1,6,5'/><path d='M9,5A1,1,0,1,1,8,4,1,1,0,0,1,9,5'/><path d='M12,5a1,1,0,1,1-1-1,1,1,0,0,1,1,1'/><path fill='#56a580' d='M8,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H8A1,1,0,0,1,9,0,1,1,0,0,1,8,1Z' transform='translate(18 5)'/></g></svg></span>
+
+                                    <span class="globalNavigationList__text astro-zgf4unrx">
+									サービス
+								</span>
+                                </a>
+                            </li><li class="globalNavigationList__item astro-zgf4unrx">
+                            <a href="/our_work/" class="globalNavigationList__link astro-zgf4unrx">
+                                <span class="globalNavigationList__icon astro-zgf4unrx"><svg width='36' height='32' viewBox='0 0 36 32' aria-hidden='true' class='globalNavigationList__iconImage'><g><path d='M23,23H5a5.006,5.006,0,0,1-5-5V5A5.006,5.006,0,0,1,5,0H25a5.006,5.006,0,0,1,5,5V9.85a1,1,0,0,1-2,0V5a3,3,0,0,0-3-3H5A3,3,0,0,0,2,5V18a3,3,0,0,0,3,3H23a1,1,0,0,1,0,2Z'/><path d='M33,11a1,1,0,0,1,1,1V29a1,1,0,0,1-1,1H25a1,1,0,0,1-1-1V12a1,1,0,0,1,1-1Zm0-2H25a3,3,0,0,0-3,3V29a3,3,0,0,0,3,3h8a3,3,0,0,0,3-3V12a3,3,0,0,0-3-3'/><path d='M0,6a1,1,0,0,1-.2-.02A1,1,0,0,1-.981,4.8l1-5A1,1,0,0,1,1.2-.981,1,1,0,0,1,1.981.2l-1,5A1,1,0,0,1,0,6Z' transform='translate(12 22)'/><path d='M1,6a1,1,0,0,1-.98-.8l-1-5A1,1,0,0,1-.2-.981,1,1,0,0,1,.981-.2l1,5A1,1,0,0,1,1,6Z' transform='translate(17 22)'/><path d='M10,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H10a1,1,0,0,1,1,1A1,1,0,0,1,10,1Z' transform='translate(10 27)'/><path fill='#e65c63' d='M1,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H1A1,1,0,0,1,2,0,1,1,0,0,1,1,1Z' transform='translate(14.5 18)'/><path fill='#e65c63' d='M1,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H1A1,1,0,0,1,2,0,1,1,0,0,1,1,1Z' transform='translate(28.5 27)'/></g></svg></span>
+
+                                <span class="globalNavigationList__text astro-zgf4unrx">
+									実績紹介
+								</span>
+                            </a>
+                        </li><li class="globalNavigationList__item astro-zgf4unrx">
+                            <a href="/knowledge/" aria-current="true" class="globalNavigationList__link astro-zgf4unrx">
+                                <span class="globalNavigationList__icon astro-zgf4unrx"><svg width='36' height='32' viewBox='0 0 36 32' aria-hidden='true' class='globalNavigationList__iconImage'><g><path d='M18,2c3.86,0,7,2.88,7,6.421a5.911,5.911,0,0,1-.8,2.967l-.128.225-.067.25-1.171,4.383a10.6,10.6,0,0,1-.732,1.741c-.184.013-.481.013-.732.013h-6.75c-.251,0-.548,0-.732-.013a10.6,10.6,0,0,1-.732-1.741L11.99,11.863l-.067-.25-.128-.225A5.911,5.911,0,0,1,11,8.421C11,4.88,14.14,2,18,2m0-2C13.029,0,9,3.77,9,8.421a7.948,7.948,0,0,0,1.058,3.958l1.192,4.463C12.375,20,12.761,20,14.625,20h6.75c1.864,0,2.25,0,3.375-3.158l1.192-4.463A7.948,7.948,0,0,0,27,8.421C27,3.77,22.971,0,18,0'/><path fill='#6480cc' d='M0,3A1,1,0,0,1-1,2V0A1,1,0,0,1,0-1,1,1,0,0,1,1,0V2A1,1,0,0,1,0,3Z' transform='translate(16 8)'/><path fill='#6480cc' d='M0,3A1,1,0,0,1-1,2V0A1,1,0,0,1,0-1,1,1,0,0,1,1,0V2A1,1,0,0,1,0,3Z' transform='translate(20 8)'/><path d='M1,32a1,1,0,0,1-1-1V14c0-2.586,4.647-3.867,9.251-3.99a1,1,0,1,1,.053,2A18.665,18.665,0,0,0,3.74,12.9C2.3,13.418,2,13.922,2,14V29.4A21.288,21.288,0,0,1,10,28a17.871,17.871,0,0,1,7,1.368v-2.1a1,1,0,1,1,2,0V31a1,1,0,0,1-1.555.832,10.324,10.324,0,0,0-1.983-.918A16.336,16.336,0,0,0,10,30a20.55,20.55,0,0,0-6.341.918,9.914,9.914,0,0,0-2.106.915A.987.987,0,0,1,1,32Z'/><path d='M0,18a1,1,0,0,1-1-1V0A1,1,0,0,1,0-1,1,1,0,0,1,1,0V17A1,1,0,0,1,0,18Z' transform='translate(4.5 12)'/><path d='M35,32a.987.987,0,0,1-.555-.171,9.914,9.914,0,0,0-2.106-.915A20.55,20.55,0,0,0,26,30a14.438,14.438,0,0,0-7.445,1.832A1,1,0,0,1,17,31V27.264a1,1,0,1,1,2,0v2.1A17.871,17.871,0,0,1,26,28a21.288,21.288,0,0,1,8,1.4V14c0-.078-.3-.582-1.74-1.1A18.665,18.665,0,0,0,26.7,12.01a1,1,0,1,1,.053-2c4.6.122,9.251,1.4,9.251,3.99V31a1,1,0,0,1-1,1Z'/><path d='M0,18a1,1,0,0,1-1-1V0A1,1,0,0,1,0-1,1,1,0,0,1,1,0V17A1,1,0,0,1,0,18Z' transform='translate(31.5 12)'/><path d='M8,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H8A1,1,0,0,1,9,0,1,1,0,0,1,8,1Z' transform='translate(14 22)'/><path d='M4,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H4A1,1,0,0,1,5,0,1,1,0,0,1,4,1Z' transform='translate(16 25)'/></g></svg></span>
+
+                                <span class="globalNavigationList__text astro-zgf4unrx">
+									ナレッジ
+								</span>
+                            </a>
+                        </li><li class="globalNavigationList__item astro-zgf4unrx">
+                            <a href="/seminar/" class="globalNavigationList__link astro-zgf4unrx">
+                                <span class="globalNavigationList__icon astro-zgf4unrx"><svg width='36' height='32' viewBox='0 0 36 32' aria-hidden='true' class='globalNavigationList__iconImage'><g><path d='M16.627,23H5a5,5,0,0,1-5-5V5A5,5,0,0,1,5,0H26a5,5,0,0,1,5,5v8.392a1,1,0,0,1-2,0V5a3,3,0,0,0-3-3H5A3,3,0,0,0,2,5V18a3,3,0,0,0,3,3H16.627a1,1,0,0,1,0,2Z'/><path d='M0,5A1,1,0,0,1-1,4V0A1,1,0,0,1,0-1,1,1,0,0,1,1,0V4A1,1,0,0,1,0,5Z' transform='translate(6 22)'/><path d='M2,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H2A1,1,0,0,1,3,0,1,1,0,0,1,2,1Z' transform='translate(5 27)'/><path d='M9,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H9a1,1,0,0,1,1,1A1,1,0,0,1,9,1Z' transform='translate(6 7)'/><path d='M6,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H6A1,1,0,0,1,7,0,1,1,0,0,1,6,1Z' transform='translate(6 15)'/><path d='M1,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H1A1,1,0,0,1,2,0,1,1,0,0,1,1,1Z' transform='translate(6 11)'/><path d='M7,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H7A1,1,0,0,1,8,0,1,1,0,0,1,7,1Z' transform='translate(10 11)'/><path fill='#56a580' d='M26,18a1,1,0,0,1,1,1v1a1,1,0,0,1-2,0V19a1,1,0,0,1,1-1m0-2a3,3,0,0,0-3,3v1a3,3,0,0,0,6,0V19a3,3,0,0,0-3-3'/><path d='M29,31a1,1,0,0,1-1-1V27a1,1,0,0,0-1-1H25a1,1,0,0,0-1,1v3a1,1,0,0,1-2,0V27a3,3,0,0,1,3-3h2a3,3,0,0,1,3,3v3A1,1,0,0,1,29,31Z'/><path d='M26,14a8,8,0,1,1-8,8,8.009,8.009,0,0,1,8-8m0-2A10,10,0,1,0,36,22,10,10,0,0,0,26,12'/></g></svg></span>
+
+                                <span class="globalNavigationList__text astro-zgf4unrx">
+									セミナー
+								</span>
+                            </a>
+                        </li><li class="globalNavigationList__item astro-zgf4unrx">
+                            <a href="/news/" class="globalNavigationList__link astro-zgf4unrx">
+                                <span class="globalNavigationList__icon astro-zgf4unrx"><svg width='36' height='32' viewBox='0 0 36 32' aria-hidden='true' class='globalNavigationList__iconImage'><g><path d='M12,5H31a5,5,0,0,1,5,5V22a5.007,5.007,0,0,1-4,4.9V31a1,1,0,0,1-1.707.707L25.586,27H12a5,5,0,0,1-5-5V10A5,5,0,0,1,12,5ZM30,28.586V26a1,1,0,0,1,1-1,3,3,0,0,0,3-3V10a3,3,0,0,0-3-3H12a3,3,0,0,0-3,3V22a3,3,0,0,0,3,3H26a1,1,0,0,1,.707.293Z'/><path fill='#e65c63' d='M1,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H1A1,1,0,0,1,2,0,1,1,0,0,1,1,1Z' transform='translate(21 21)'/><path fill='#e65c63' d='M1,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H1A1,1,0,0,1,2,0,1,1,0,0,1,1,1Z' transform='translate(21 15)'/><path fill='#e65c63' d='M0,7a1.007,1.007,0,0,1-.166-.014A1,1,0,0,1-.986,5.836l1-6A1,1,0,0,1,1.164-.986,1,1,0,0,1,1.986.164l-1,6A1,1,0,0,1,0,7Z' transform='translate(21 15)'/><path d='M1,6A1,1,0,0,1,.058,4.665a7.639,7.639,0,0,1,4.6-4.6,1,1,0,0,1,.689,1.878,5.645,5.645,0,0,0-3.4,3.4A1,1,0,0,1,1,6Z'/><path d='M5,7a1,1,0,0,1-.942-1.336,4.319,4.319,0,0,1,2.6-2.6,1,1,0,0,1,.689,1.878,2.325,2.325,0,0,0-1.4,1.4A1,1,0,0,1,5,7Z'/><path fill='#e65c63' d='M23,11a1,1,0,1,1-1-1,1,1,0,0,1,1,1'/></g></svg></span>
+
+                                <span class="globalNavigationList__text astro-zgf4unrx">
+									ニュース
+								</span>
+                            </a>
+                        </li><li class="globalNavigationList__item astro-zgf4unrx">
+                            <a href="/company/" class="globalNavigationList__link astro-zgf4unrx">
+                                <span class="globalNavigationList__icon astro-zgf4unrx"><svg width='36' height='32' viewBox='0 0 36 32' aria-hidden='true' class='globalNavigationList__iconImage'><g><path d='M14,32a1,1,0,0,1-1-1V2.456L2,6.687V31a1,1,0,0,1-2,0V6a1,1,0,0,1,.641-.933l13-5A1,1,0,0,1,15,1V31A1,1,0,0,1,14,32Z'/><path d='M20,16a1,1,0,0,1-1-1V6.468l-5.64-4.7A1,1,0,1,1,14.64.232l6,5A1,1,0,0,1,21,6v9A1,1,0,0,1,20,16Z'/></g><g><path d='M29,13a7.008,7.008,0,0,1,7,7c0,2.056-1.223,5.075-2.368,7.215a18.539,18.539,0,0,1-2.088,3.18A3.624,3.624,0,0,1,29,32a3.624,3.624,0,0,1-2.543-1.605,18.539,18.539,0,0,1-2.088-3.18C23.223,25.075,22,22.056,22,20A7.008,7.008,0,0,1,29,13Zm0,17c.357-.106,1.541-1.192,2.965-3.907A16.175,16.175,0,0,0,34,20a5,5,0,0,0-10,0,16.175,16.175,0,0,0,2.035,6.089C27.459,28.8,28.643,29.89,29,30Z'/><path d='M28,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H28a1,1,0,0,1,1,1A1,1,0,0,1,28,1Z' transform='translate(1 31)'/></g><path fill='#6480cc' d='M0,2A1,1,0,0,1-1,1V0A1,1,0,0,1,0-1,1,1,0,0,1,1,0V1A1,1,0,0,1,0,2Z' transform='translate(5 9)'/><path fill='#6480cc' d='M0,2A1,1,0,0,1-1,1V0A1,1,0,0,1,0-1,1,1,0,0,1,1,0V1A1,1,0,0,1,0,2Z' transform='translate(9 8)'/><path fill='#6480cc' d='M0,2A1,1,0,0,1-1,1V0A1,1,0,0,1,0-1,1,1,0,0,1,1,0V1A1,1,0,0,1,0,2Z' transform='translate(5 14)'/><path fill='#6480cc' d='M0,2A1,1,0,0,1-1,1V0A1,1,0,0,1,0-1,1,1,0,0,1,1,0V1A1,1,0,0,1,0,2Z' transform='translate(9 13)'/><path d='M0,2A1,1,0,0,1-1,1V0A1,1,0,0,1,0-1,1,1,0,0,1,1,0V1A1,1,0,0,1,0,2Z' transform='translate(29 20)'/><path fill='#6480cc' d='M0,2A1,1,0,0,1-1,1V0A1,1,0,0,1,0-1,1,1,0,0,1,1,0V1A1,1,0,0,1,0,2Z' transform='translate(5 19)'/></svg></span>
+
+                                <span class="globalNavigationList__text astro-zgf4unrx">
+									会社情報
+								</span>
+                            </a>
+                        </li><li class="globalNavigationList__item astro-zgf4unrx">
+                            <a href="https://jobs.mitsue.co.jp/" class="globalNavigationList__link astro-zgf4unrx">
+                                <span class="globalNavigationList__icon astro-zgf4unrx"><svg width='36' height='32' viewBox='0 0 36 32' aria-hidden='true' class='globalNavigationList__iconImage'><g><path d='M9,5a1,1,0,0,1,1,1V7A1,1,0,0,1,8,7V6A1,1,0,0,1,9,5M9,3A3,3,0,0,0,6,6V7a3,3,0,0,0,6,0V6A3,3,0,0,0,9,3'/><path d='M15.981,21a1,1,0,0,1-.6-.2l-3.982-3A1,1,0,0,1,11,17V14a1,1,0,0,0-1-1H8a1,1,0,0,0-1,1v6a1,1,0,0,1-2,0V14a3,3,0,0,1,3-3h2a3,3,0,0,1,3,3v2.5l3.584,2.7a1,1,0,0,1-.6,1.8Z'/><path d='M27,5a1,1,0,0,1,1,1V7a1,1,0,0,1-2,0V6a1,1,0,0,1,1-1m0-2a3,3,0,0,0-3,3V7a3,3,0,0,0,6,0V6a3,3,0,0,0-3-3'/><path d='M30,21a1,1,0,0,1-1-1V14a1,1,0,0,0-1-1H26a1,1,0,0,0-1,1v3a1,1,0,0,1-1.6.8l-4-3a1,1,0,0,1,1.2-1.6L23,15V14a3,3,0,0,1,3-3h2a3,3,0,0,1,3,3v6A1,1,0,0,1,30,21Z'/><path d='M35,32a1,1,0,0,1-1-1V25a3,3,0,0,0-3-3H5a3,3,0,0,0-3,3v6a1,1,0,0,1-2,0V25a5,5,0,0,1,5-5H31a5,5,0,0,1,5,5v6A1,1,0,0,1,35,32Z'/><path d='M32,1H0A1,1,0,0,1-1,0,1,1,0,0,1,0-1H32a1,1,0,0,1,1,1A1,1,0,0,1,32,1Z' transform='translate(2 26)'/><path fill='#56a580' d='M4,3a1,1,0,0,1-.446-.106l-4-2A1,1,0,0,1-.894-.447,1,1,0,0,1,.447-.894l4,2A1,1,0,0,1,4,3Z' transform='translate(17 1)'/><path fill='#56a580' d='M0,2a1,1,0,0,1-.949-.684A1,1,0,0,1-.316.051l3-1a1,1,0,0,1,1.265.632A1,1,0,0,1,3.316.949l-3,1A1,1,0,0,1,0,2Z' transform='translate(18 6)'/></g></svg></span>
+
+                                <span class="globalNavigationList__text astro-zgf4unrx">
+									採用情報
+								</span>
+                            </a>
+                        </li>
+                        </ul>
+                    </div>
+                </nav>
+
+
+
+
+
+
+
+                <div class="utility astro-5mdmzozj">
+
+                    <div class="lang astro-m3ivunlc">
+                        <ul class="lang__list astro-m3ivunlc">
+                            <li class="lang__item astro-m3ivunlc">
+                                <a href="/english/" hreflang="en" class="lang__link astro-m3ivunlc">En</a>
+                            </li>
+                        </ul>
+                    </div>
+
+
+
+
+
+                    <search class="search js-search astro-4y6fbj2y">
+                        <button type="button" class="search__button fn-search__button astro-4y6fbj2y">
+                            <svg width="21" height="20" viewBox="0 0 21 20" role="img" class="searchIcon astro-av5xsdx6">
+                                <title>検索</title>
+                                <path d="M21 18.94l-5.552-5.552c.975-1.383 1.553-3.067 1.553-4.888 0-4.694-3.806-8.5-8.501-8.5s-8.5 3.806-8.5 8.5 3.806 8.5 8.5 8.5c2.332 0 4.443-.94 5.979-2.461l5.461 5.461 1.06-1.06zm-12.5-3.44c-3.866 0-7-3.134-7-7s3.134-7 7-7c3.864.004 6.996 3.136 7 7 0 3.866-3.134 7-7 7z" class="astro-av5xsdx6"></path>
+                            </svg>
+                        </button>
+                        <div class="search__body fn-search__content astro-4y6fbj2y">
+                            <div class="search__inner fn-search__inner astro-4y6fbj2y">
+                                <form class="search__form astro-4y6fbj2y" action="/search/">
+                                    <label for="search" class="search__label astro-4y6fbj2y">サイト内検索</label>
+
+                                    <div class="search__input astro-4y6fbj2y">
+                                        <input type="search" id="search" name="keyword" class="search__inputItem astro-4y6fbj2y">
+
+                                        <button class="search__searchButton astro-4y6fbj2y">
+                                            <svg width="21" height="20" viewBox="0 0 21 20" role="img" class="searchIcon astro-av5xsdx6">
+                                                <title>検索</title>
+                                                <path d="M21 18.94l-5.552-5.552c.975-1.383 1.553-3.067 1.553-4.888 0-4.694-3.806-8.5-8.501-8.5s-8.5 3.806-8.5 8.5 3.806 8.5 8.5 8.5c2.332 0 4.443-.94 5.979-2.461l5.461 5.461 1.06-1.06zm-12.5-3.44c-3.866 0-7-3.134-7-7s3.134-7 7-7c3.864.004 6.996 3.136 7 7 0 3.866-3.134 7-7 7z" class="astro-av5xsdx6"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <button type="button" class="button fn-search__closeButton astro-5xmt2s7x">閉じる</button>
+                            </div>
+                        </div>
+
+                        <template class="fn-search__templateOverlay astro-4y6fbj2y">
+                            <div class="fn-search__overlay astro-4y6fbj2y"></div>
+                        </template>
+                    </search>
+
+
+
+
+
+
+                    <script type="module" src="/assets/js/CTKXSGaI.js"></script>
+
+
+                    <div class="switch astro-2ev2h6ry">
+                        <div class="switch__inner astro-2ev2h6ry">
+                            <select class="switch__select astro-2ev2h6ry" lang="en" title="表示テーマを選択">
+                                <button class="switch__button astro-2ev2h6ry" lang="en">
+                                    <selectedcontent></selectedcontent>
+                                </button>
+
+                                <option class="switch__option astro-2ev2h6ry" value="light">
+                                    <span class="switch__text switch__text--light astro-2ev2h6ry">Light</span>
+                                </option>
+                                <option class="switch__option astro-2ev2h6ry" value="dark">
+                                    <span class="switch__text switch__text--dark astro-2ev2h6ry">Dark</span>
+                                </option>
+                                <option class="switch__option astro-2ev2h6ry" value="system" selected>
+                                    <span class="switch__text switch__text--system astro-2ev2h6ry">System</span>
+                                </option>
+                            </select>
+                        </div>
+
+                        <a href="/help/darkmode.html" class="switch__help astro-2ev2h6ry">ダークモード対応について</a>
+                    </div>
+
+
+
+
+
+                    <div class="contact astro-6kjrv6xz">
+                        <a href="/contact/" class="contact__link astro-6kjrv6xz">お問い合わせ</a>
+                    </div>
+
+
+
+                </div>
+
+
+
+
+                <template class="fn-menu__templateCloseButton astro-57vyd5gk">
+                    <button type="button" class="globalNavigation__closeButton fn-menu__closeButton astro-57vyd5gk"><span class="globalNavigation__closeButtonText astro-57vyd5gk">閉じる</span></button>
+                </template>
+            </div>
+
+            <template class="fn-menu__templateOverlay astro-57vyd5gk">
+                <div class="fn-menu__overlay astro-57vyd5gk"></div>
+            </template>
+        </div>
+
+
+
+
+
+
+        <script type="module" src="/assets/js/BPj_m46U.js"></script>
+    </div>
+</header>
+
+
+
+
+<script type="module" src="/assets/js/uyQ-7Byt.js"></script>
+
+<main>
+
+    <div class="pageTitleArea astro-w3kumz4o">
+
+        <div class="breadcrumbArea astro-vnstv4b6">
+            <div class="breadcrumbArea__inner astro-vnstv4b6">
+                <nav class="breadcrumb astro-vnstv4b6" aria-label="Breadcrumb">
+                    <div class="breadcrumb__inner astro-vnstv4b6">
+                        <ol class="breadcrumb__list astro-vnstv4b6">
+                            <li class="breadcrumb__item astro-vnstv4b6">
+                                <a href="/" class="breadcrumb__link astro-vnstv4b6">
+                                    ホーム
+                                </a>
+                            </li><li class="breadcrumb__item astro-vnstv4b6">
+                            <a href="/knowledge/" class="breadcrumb__link astro-vnstv4b6">
+                                ナレッジ
+                            </a>
+                        </li><li class="breadcrumb__item astro-vnstv4b6">
+                            <a href="/knowledge/column/" class="breadcrumb__link astro-vnstv4b6">
+                                コラム
+                            </a>
+                        </li><li class="breadcrumb__item astro-vnstv4b6">
+                            <a href="/knowledge/column/20260724.html" aria-current="page" class="breadcrumb__link astro-vnstv4b6">
+                                個人のAI活用から、チームでエージェントと協働する組織へ
+                            </a>
+                        </li>
+                        </ol>
+                    </div>
+                </nav><!-- /.breadcrumb -->
+            </div>
+        </div>
+
+
+
+
+        <div class="pageTitleArea__inner astro-w3kumz4o">
+
+
+
+
+            <div class="level1Column astro-vpnxpeor">
+                <div class="level1Column__inner astro-vpnxpeor">
+                    <div class="level1Column__head astro-vpnxpeor">
+                        <time datetime="2026-07-24" class="level1Column__date astro-vpnxpeor">2026年7月24日</time>
+
+                        <h1 class="level1Column__heading astro-vpnxpeor">個人のAI活用から、チームでエージェントと協働する組織へ</h1>
+
+                        <span class="level1Column__author astro-vpnxpeor">
+					<span class="level1Column__authorAbout astro-vpnxpeor">X-tech推進本部 副本部長</span><span class="level1Column__authorName astro-vpnxpeor">加藤 健志</span>
+				</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+    <div class="navigationContentArea astro-ol5vgmfw">
+        <div class="navigationContentArea__inner astro-ol5vgmfw">
+            <div class="content astro-ol5vgmfw">
+
+                <div class="contentCollection column">
+                    <p>当社では、AIトランスフォーメーション推進・浸透統括グループを中心に、Microsoft 365 CopilotやCursorなどの社内標準ツールの整備や活用推進に取り組んできました。</p>
+                    <p>一例として、提案の進め方を形式知化し、提案準備のためのレールを敷いてくれる「提案準備エージェント」や、WBSのチェック観点をプロンプトに書くことで、あらかじめリスクを洗い出してくれる「WBSレビューエージェント」などを開発し、チームで共有しています。</p>
+                    <p>いずれもベテランが持つ暗黙知をエージェントに教えることで、属人化しやすい進め方やチェック観点を、組織として再利用できる形にしたものです。</p>
+                    <p>こうした取り組みを進めるなかで、個人がエージェントを活用する段階の先にある課題も見えてきました。</p>
+                    <h2 id="人の判断承認が次のボトルネックになる">人の判断・承認が次のボトルネックになる</h2>
+                    <p>人の判断や承認がボトルネックになることは一般的にも言われてきましたが、私自身がAIエージェントを活用するなかで、その意味を実感するようになりました。</p>
+                    <p>AI推進を始めた当初は、既存の業務プロセスを整理しながらAIエージェントを作り、標準的なプロセスに組み込むことで、AIが担う作業の割合を少しずつ増やしていくことを考えていました。</p>
+                    <p>しかし、エージェントは従来の業務ツールのように、入力に対して出力が一意に決まるとは限りません。そのため、エージェントを標準的な業務プロセスに組み込むなら、何をもって完了とするかなどの判断基準もそろえる必要がありますが、すべてのタスク、すべてのケースを想定して基準を定義するのはやはり現実的ではありません。だからこそ、プロセスに組み込めば組み込むほど「人が都度確認する」局面が増え、判断・承認の負荷が前面に出てきます。</p>
+                    <p>さらに、AIの導入によって各自の作業時間が圧縮され、判断や承認の頻度はこれまで以上に増えてきています。最近では開発者を中心に、複数のエージェントへ並行して指示を出しながら複数のプロジェクトを同時進行する使われ方も広がってきています。</p>
+                    <p>いまは各自が自分のPC上でエージェントを動かしていることが多く、それぞれが進行中なのか、承認待ちなのか、完了しているのかは本人にしか分かりません。</p>
+                    <p>これまでは、判断や承認が役職者に集中し、その人がボトルネックになることが問題視されてきました。ところが、複数のエージェントから次々に判断や承認を求められるようになると、同じ構造が個々の担当者にも生まれます。</p>
+                    <h2 id="複数エージェントとの協働を個人からチームへ">複数エージェントとの協働を、個人からチームへ</h2>
+                    <p>個人に集中する負担を減らすには、それをチームに分散するのが有効です。</p>
+                    <p>すでに、グループチャットや会議にAIが参加する使い方や、AIを交えたモブプログラミングなど、個人ではなくチーム単位でAIを使う動きも見え始めています。こうした流れをさらに進めるなら、次のような状態を構想できます。</p>
+                    <ul>
+                        <li>エージェントは個人のPCの中だけではなく、チームから見える場所で動かす</li>
+                        <li>エージェントの状態は、チームの誰でも把握できる</li>
+                        <li>指示待ちのエージェントに対して、他のメンバーが途中からでも指示を出せる</li>
+                    </ul>
+                    <p>以前のコラム「<a href="/knowledge/column/20260317.html">AIトランスフォーメーション推進・浸透統括グループの取り組み</a>」でも触れたとおり、当社では組織のAI成熟度を「個人レベルのできる化」「部署レベルのできる化」「自働化への移行」といった段階で捉えています。成熟度を定義した当初は、エージェントを部署内で共有しつつも、それを各自が個別に使うイメージでいました。いまは、そこからもう一段先、チームでエージェントを扱う姿を考える段階に来ていると感じています。</p>
+                    <h2 id="チーム協働を支えるコミュニケーションと組織デザイン">チーム協働を支えるコミュニケーションと組織デザイン</h2>
+                    <p>ただし、エージェントの状態を共有するだけでは、チームで扱えるようにはなりません。途中から参加するメンバーがエージェントへの指示や確認を引き継ぐには、プロジェクトのゴールや制約、現在地、これまでの経緯や決定事項など、判断に必要なコンテキストを共有できる状態が必要です。これまで以上に、チームのコミュニケーションそのものを設計することが重要になります。</p>
+                    <p>一方で、誰もが何でも判断できる状態では、責任の所在が曖昧になります。そのため、低リスクでやり直し可能な判断は、基準を定めたうえでエージェントの実行ループ内に移し、高リスク、不可逆、あるいは重大な責任を伴う判断は、人が確認・承認する工程として残しておく必要があります。そのうえで、誰がどこまで指示や承認を担い、どの判断を誰に委ねるのかという、権限と責任の階層も設計しなければなりません。</p>
+                    <p>つまり、チーム単位でエージェントと協働するには、指示や確認を分担できるコミュニケーションの仕組みと、判断を適切な人（もしくはAI）に委ねるための組織デザインの両方が必要です。個人のAI活用が広がった今だからこそ、次はチームとエージェントが協働する働き方を、具体的に描き、試してみる段階に来ていると考えています。</p>
+                </div>
+
+
+                <div class="navigationLink astro-q43nw3ck">
+                    <ul class="navigationLink__list astro-q43nw3ck">
+
+                        <li class="navigationLink__item astro-6jkqpxkm">
+                            <a href="/knowledge/column/20260710.html" class="navigationLink__link astro-6jkqpxkm">
+                                <span class="navigationLink__label astro-6jkqpxkm"><b class="astro-6jkqpxkm">前の記事</b></span>
+
+                                <span class="navigationLink__title astro-6jkqpxkm">WebMCP起点で考えた、GEO/LLMO時代のWebアクセシビリティ</span>
+                            </a>
+                        </li>
+
+
+
+
+
+
+
+                    </ul>
+                </div>
+
+
+
+
+
+                <div class="button -back astro-qr44hc7r">
+                    <a href="/knowledge/column/2026.html" class="button__button astro-qr44hc7r">2026年のコラム一覧に戻る</a>
+                </div>
+
+
+
+
+
+                <div class="letter astro-xyvokq5z">
+                    <div class="letter__inner astro-xyvokq5z">
+                        <h2 class="letter__heading astro-xyvokq5z" lang="en">Newsletter</h2>
+
+                        <div class="letter__body astro-xyvokq5z">
+                            <p class="letter__text astro-xyvokq5z">
+                                メールニュースでは、本サイトの更新情報や業界動向などをお伝えしています。ぜひご購読ください。
+                            </p>
+
+                            <div class="letter__linkLayout astro-xyvokq5z">
+                                <a href="/knowledge/mailnews/request.html" class="letter__link astro-xyvokq5z">メールニュース購読を申し込む</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+
+            <nav class="localNavigation astro-s3cilock" aria-label="Local">
+
+                <div class="mainLocalNavigation">
+                    <ul class="mainLocalNavigation__list">
+                        <li class="mainLocalNavigation__item">
+
+                            <a href="/knowledge/column/" class="mainLocalNavigation__link astro-mxakggwz">コラム</a>
+
+
+
+
+
+
+                            <ul class="mainLocalNavigation__list">
+                                <li class="mainLocalNavigation__item">
+
+                                    <a href="/knowledge/column/2026.html" class="mainLocalNavigation__link astro-mxakggwz">2026年</a>
+
+
+
+
+
+                                </li>
+
+                                <li class="mainLocalNavigation__item">
+
+                                    <a href="/knowledge/column/2025.html" class="mainLocalNavigation__link astro-mxakggwz">2025年</a>
+
+
+
+
+
+                                </li>
+
+                                <li class="mainLocalNavigation__item">
+
+                                    <a href="/knowledge/column/2024.html" class="mainLocalNavigation__link astro-mxakggwz">2024年</a>
+
+
+
+
+
+                                </li>
+
+                                <li class="mainLocalNavigation__item">
+
+                                    <a href="/knowledge/column/2023.html" class="mainLocalNavigation__link astro-mxakggwz">2023年</a>
+
+
+
+
+
+                                </li>
+
+                                <li class="mainLocalNavigation__item">
+
+                                    <a href="/knowledge/column/2022.html" class="mainLocalNavigation__link astro-mxakggwz">2022年</a>
+
+
+
+
+
+                                </li>
+
+                                <li class="mainLocalNavigation__item">
+
+                                    <a href="/knowledge/column/backnumber.html" class="mainLocalNavigation__link astro-mxakggwz">バックナンバー</a>
+
+
+
+
+
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="mainLocalNavigation__item">
+
+                            <a href="/knowledge/blog/" class="mainLocalNavigation__link astro-mxakggwz">Blog</a>
+
+
+
+
+
+                        </li>
+
+                        <li class="mainLocalNavigation__item">
+
+                            <a href="/knowledge/tech_radio/" class="mainLocalNavigation__link astro-mxakggwz">ミツエーテックラジオ</a>
+
+
+
+
+
+                        </li>
+
+                        <li class="mainLocalNavigation__item">
+
+                            <a href="/knowledge/colors/" class="mainLocalNavigation__link astro-mxakggwz">広報誌「MITSUE COLORS」</a>
+
+
+
+
+
+                        </li>
+
+                        <li class="mainLocalNavigation__item">
+
+                            <a href="/knowledge/mailnews/request.html" class="mainLocalNavigation__link astro-mxakggwz">メールニュース</a>
+
+
+
+
+
+                        </li>
+
+                        <li class="mainLocalNavigation__item">
+
+                            <a href="/knowledge/marketing/" class="mainLocalNavigation__link astro-mxakggwz">Webマーケティング資料集</a>
+
+
+
+
+
+                        </li>
+
+                        <li class="mainLocalNavigation__item">
+
+                            <a href="/knowledge/social_media_accounts.html" class="mainLocalNavigation__link astro-mxakggwz">ソーシャルメディア 公式アカウント</a>
+
+
+
+
+
+                        </li>
+
+                        <li class="mainLocalNavigation__item">
+
+                            <a href="/knowledge/glossary.html" class="mainLocalNavigation__link astro-mxakggwz">用語集</a>
+
+
+
+
+
+                        </li>
+
+
+                    </ul>
+                </div>
+
+
+
+                <div class="subLocalNavigation astro-6wcffxco">
+                    <ul class="subLocalNavigation__list astro-6wcffxco">
+
+
+
+                        <li class="subLocalNavigation__item astro-6wcffxco">
+                            <a href="/knowledge/" class="subLocalNavigation__link astro-6wcffxco">
+                                ナレッジトップ
+                            </a>
+                        </li>
+
+
+
+
+                    </ul>
+                </div>
+
+
+
+            </nav>
+
+
+
+
+
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+
+<footer class="footer astro-pzbmjr5h">
+
+    <div class="scrollTopNavigationArea astro-wco6ww6l">
+        <div class="scrollTopNavigationArea__inner astro-wco6ww6l">
+            <div class="scrollTopNavigation astro-wco6ww6l">
+                <a href="#top" class="scrollTopNavigation__link astro-wco6ww6l"><span class="scrollTopNavigation__text astro-wco6ww6l">ページ最上部に戻る</span></a>
+            </div><!-- /.scrollTopNavigation -->
+        </div>
+    </div>
+
+
+
+
+
+    <div class="excursionLinkArea astro-ics4qepc">
+        <div class="excursionLinkArea__inner astro-ics4qepc">
+
+            <nav class="excursionLink astro-ojtbx4g3" aria-label="Excursion">
+                <ul class="excursionLink__list astro-ojtbx4g3">
+                    <li class="excursionLink__item astro-ojtbx4g3">
+                        <a href="/knowledge/" class="excursionLink__link astro-ojtbx4g3">ナレッジ</a>
+
+                        <ul class="excursionLink__list astro-ojtbx4g3">
+                            <li class="excursionLink__item astro-ojtbx4g3">
+                                <a href="/knowledge/column/" class="excursionLink__link astro-ojtbx4g3">コラム</a>
+                            </li>
+
+                            <li class="excursionLink__item astro-ojtbx4g3">
+                                <a href="/knowledge/blog/" class="excursionLink__link astro-ojtbx4g3">Blog</a>
+                            </li>
+
+                            <li class="excursionLink__item astro-ojtbx4g3">
+                                <a href="/knowledge/tech_radio/" class="excursionLink__link astro-ojtbx4g3">ミツエーテックラジオ</a>
+                            </li>
+
+                            <li class="excursionLink__item astro-ojtbx4g3">
+                                <a href="/knowledge/colors/" class="excursionLink__link astro-ojtbx4g3">広報誌「MITSUE COLORS」</a>
+                            </li>
+
+                            <li class="excursionLink__item astro-ojtbx4g3">
+                                <a href="/knowledge/mailnews/request.html" class="excursionLink__link astro-ojtbx4g3">メールニュース</a>
+                            </li>
+
+                            <li class="excursionLink__item astro-ojtbx4g3">
+                                <a href="/knowledge/social_media_accounts.html" class="excursionLink__link astro-ojtbx4g3">ソーシャルメディア公式アカウント</a>
+                            </li>
+
+                            <li class="excursionLink__item astro-ojtbx4g3">
+                                <a href="/knowledge/marketing/" class="excursionLink__link astro-ojtbx4g3">Webマーケティング資料集</a>
+                            </li>
+
+                            <li class="excursionLink__item astro-ojtbx4g3">
+                                <a href="/knowledge/glossary.html" class="excursionLink__link astro-ojtbx4g3">用語集</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+
+
+
+        </div>
+    </div>
+
+
+
+
+
+    <div class="contactArea astro-m2nzsg34">
+        <div class="contactArea__inner astro-m2nzsg34">
+            <div class="contact astro-m2nzsg34">
+                <h2 class="contact__heading astro-m2nzsg34" lang="en">Contact</h2>
+
+                <div class="contact__body astro-m2nzsg34">
+                    <p class="contact__text astro-m2nzsg34">当社のサービスやセミナーに関するご質問・ご相談、当社の企業情報やニュース、採用に関することなど、お気軽にお問い合わせください。</p>
+
+                    <div class="contact__linkLayout astro-m2nzsg34">
+                        <a href="/contact/" class="contact__link astro-m2nzsg34">お問い合わせ・ご相談</a>
+                    </div>
+
+                    <ul class="contact__list astro-m2nzsg34">
+                        <li class="contact__listItem astro-m2nzsg34">
+                            <a href="/download/" class="contact__listLink astro-m2nzsg34">
+                                <div class="contact__listContainer astro-m2nzsg34">
+                                    <div class="contact__listTitle astro-m2nzsg34">資料ダウンロード</div>
+                                    <div class="contact__listText astro-m2nzsg34">
+                                        お役立ち資料、当社の事例などが掲載された資料をご案内します。
+                                    </div>
+                                </div>
+
+                                <div class="contact__listMedia astro-m2nzsg34">
+                                    <img src="/assets/img/icon_download_brochure.svg" alt="" width="80" height="80" loading="lazy" decoding="async" class="contact__listImage astro-m2nzsg34">
+                                </div>
+                            </a>
+                        </li>
+                        <li class="contact__listItem astro-m2nzsg34">
+                            <a href="/knowledge/mailnews/request.html" class="contact__listLink astro-m2nzsg34">
+                                <div class="contact__listContainer astro-m2nzsg34">
+                                    <div class="contact__listTitle astro-m2nzsg34">メールニュース購読</div>
+                                    <div class="contact__listText astro-m2nzsg34">
+                                        本サイトの更新情報や業界動向などをお伝えしています。
+                                    </div>
+                                </div>
+
+                                <div class="contact__listMedia astro-m2nzsg34">
+                                    <img src="/assets/img/icon_subscribe.svg" alt="" width="80" height="80" loading="lazy" decoding="async" class="contact__listImage astro-m2nzsg34">
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div><!-- /.contact -->
+        </div>
+    </div>
+
+
+
+
+
+    <div class="linkListArea astro-aro5qlnz">
+        <div class="linkListArea__inner astro-aro5qlnz">
+            <div class="linkList astro-aro5qlnz">
+                <ul class="linkList__list astro-aro5qlnz">
+                    <li class="linkList__item astro-aro5qlnz">
+                        <a href="/sitemap/" class="linkList__link astro-aro5qlnz">サイトマップ</a>
+                    </li>
+
+                    <li class="linkList__item astro-aro5qlnz">
+                        <a href="/privacy_policy.html" class="linkList__link astro-aro5qlnz">プライバシーポリシー</a>
+                    </li>
+
+                    <li class="linkList__item astro-aro5qlnz">
+                        <a href="/site_policy.html" class="linkList__link astro-aro5qlnz">サイトポリシー</a>
+                    </li>
+
+                    <li class="linkList__item astro-aro5qlnz">
+                        <a href="/help/" class="linkList__link astro-aro5qlnz">ヘルプ</a>
+                    </li>
+
+
+                </ul>
+            </div><!-- /.linkList -->
+        </div>
+    </div>
+
+
+
+
+
+    <div class="copyrightArea astro-yjicw65d">
+        <div class="copyrightArea__inner astro-yjicw65d">
+            <div class="copyright astro-yjicw65d">
+                <small class="astro-yjicw65d">© Mitsue-Links Co., Ltd.</small>
+            </div><!-- /.copyright -->
+        </div>
+    </div>
+
+
+
+</footer>
+
+
+
+
+<script type="module" src="/assets/js/HlKtA8Pn.js"></script>
+</body>
+</html>
+
