@@ -1,7 +1,7 @@
 use std::{io, process::ExitCode};
 
 use clap::Parser;
-use sdlint::{cli::Cli, run, RunOutcome};
+use sdlint::{RunOutcome, cli::Cli, run};
 
 fn main() -> ExitCode {
     let cli = Cli::parse();

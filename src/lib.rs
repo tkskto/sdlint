@@ -6,4 +6,4 @@ pub mod app;
 pub mod cli;
 pub mod input;
 
-pub use app::{run, RunOutcome};
+pub use app::{RunOutcome, run};
