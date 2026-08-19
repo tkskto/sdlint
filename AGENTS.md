@@ -1,10 +1,22 @@
-# ドキュメント作成時の注意点
+# Documentation Guidelines
 
-このリポジトリでMarkdownドキュメントを作成または編集する場合は、以下の規則に従ってください。
+Follow these rules when creating or editing Markdown documentation in this repository.
 
-* 通常の文章では、段落の途中に改行を入れず、1つの段落を1行で記述してください。見出し、段落の区切り、リスト、表、コードブロックなど、Markdownの構造に必要な改行だけを使用してください。
-* バッククォートは実際のコード断片にだけ使用してください。用語、型名、プロパティ名、ファイル名、オプション名などを装飾する目的では使用しないでください。
-* 二重アスタリスクによる強調は使用しないでください。語句を目立たせるための装飾に頼らず、見出し、表、文章構造で情報を整理してください。
-* 人間の読者に必要な仕様、根拠、判断材料だけを記載してください。執筆者向けの作業指示、レビュー方法、ファイルを追加または分割する手順などを本文に含めないでください。
-* ルールの出典はルールファミリーごとにファイルを分け、索引から参照できるようにしてください。schema.orgの語彙定義とGoogle Search Centralの要件を混同せず、それぞれの出典、確認日、対象検索機能、必須または推奨の区分、固有要件の提供元を記録してください。
-* Googleに専用のリッチリザルト文書がないことや、検索機能の表示対象が制限されていることは、プロパティ要件やschema.org上の妥当性とは分けて説明してください。
+* In ordinary prose, do not insert line breaks within a paragraph; write each paragraph on one line. Use line breaks required by Markdown structure, such as headings, paragraph boundaries, lists, tables, and code blocks.
+* Use backticks only for actual code fragments. Do not use them to decorate terms, type names, property names, file names, option names, or similar text.
+* Do not use double-asterisk emphasis. Organize information with headings, tables, and document structure instead of decorative emphasis.
+* Include only the specifications, rationale, and decision-making information that human readers need. Do not include authoring instructions, review procedures, or instructions for adding or splitting files in the document body.
+* Separate source documentation by rule family and make each source accessible from an index. Do not conflate schema.org vocabulary definitions with Google Search Central requirements; record the source, verification date, target search feature, required or recommended status, and provider of feature-specific requirements for each.
+* Explain separately when Google has no dedicated rich-result documentation or when a search feature has limited display eligibility; do not conflate those facts with property requirements or schema.org validity.
+
+# Security Policy
+
+Apply the following security policy in every session that works on this repository.
+
+* Pin external GitHub Actions to full commit SHAs and verify the corresponding release and SHA when updating them.
+* Do not add execution of untrusted code through pull_request_target, workflow_run, or Secrets.
+* Grant GitHub Actions only the minimum permissions required for each job; do not give write permissions or tokens to jobs that do not need them.
+* Update Cargo.lock when changing Cargo dependencies and use --locked in CI. Do not add unpinned Git dependencies or wildcard dependencies.
+* Follow deny.toml for dependency vulnerabilities, licenses, and sources; do not add audit exclusions without a valid justification.
+* Do not add secrets, access tokens, or personal information to source code, test data, logs, or CI output.
+* Treat changes to CI configuration, dependency definitions, lockfiles, and audit configuration with greater care than ordinary code changes.
