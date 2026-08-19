@@ -46,6 +46,8 @@ pub enum InputError {
     GlobNoMatch { pattern: String },
     #[error("invalid glob '{pattern}': {message}")]
     InvalidGlob { pattern: String, message: String },
+    #[error("unsupported input file: {path}")]
+    UnsupportedFile { path: PathBuf },
     #[error("standard input was specified more than once")]
     DuplicateStdin,
 }
@@ -77,7 +79,7 @@ pub fn resolve(operands: &[String]) -> Vec<InputSpec> {
         if is_glob(operand) {
             expand_glob(operand, &mut paths, &mut output);
         } else {
-            let _ = expand_path(Path::new(operand), &mut paths, &mut output);
+            let _ = expand_explicit_path(Path::new(operand), &mut paths, &mut output);
         }
     }
     output
@@ -102,7 +104,7 @@ fn expand_glob(pattern: &str, seen: &mut HashSet<PathBuf>, output: &mut Vec<Inpu
     matches.sort_by_key(|a| normalized(a));
     let mut matched_supported = false;
     for path in matches {
-        matched_supported |= expand_supported_path(&path, seen, output);
+        matched_supported |= expand_glob_match(&path, seen, output);
     }
     if !matched_supported {
         output.push(InputSpec::Error(InputError::GlobNoMatch {
@@ -111,43 +113,59 @@ fn expand_glob(pattern: &str, seen: &mut HashSet<PathBuf>, output: &mut Vec<Inpu
     }
 }
 
-fn expand_path(path: &Path, seen: &mut HashSet<PathBuf>, output: &mut Vec<InputSpec>) -> bool {
-    if path.is_dir() {
-        let mut files = WalkDir::new(path)
-            .follow_links(false)
-            .into_iter()
-            .filter_map(Result::ok)
-            .filter(|entry| entry.file_type().is_file() && supported(entry.path()))
-            .map(|entry| entry.into_path())
-            .collect::<Vec<_>>();
-        files.sort_by_key(|a| normalized(a));
-        let matched = !files.is_empty();
-        for file in files {
-            add_file(file, seen, output);
-        }
-        matched
-    } else {
-        // Explicit files are retained even with unsupported extensions; later
-        // stages can give an appropriate format error. Acquisition still reports
-        // missing and unreadable paths as typed read errors.
-        add_file(path.to_path_buf(), seen, output);
-        true
-    }
-}
-
-fn expand_supported_path(
+fn expand_explicit_path(
     path: &Path,
     seen: &mut HashSet<PathBuf>,
     output: &mut Vec<InputSpec>,
 ) -> bool {
     if path.is_dir() {
-        expand_path(path, seen, output)
+        collect_directory_files(path, seen, output)
+    } else {
+        if path.exists() && !supported(path) {
+            output.push(InputSpec::Error(InputError::UnsupportedFile {
+                path: path.to_path_buf(),
+            }));
+            false
+        } else {
+            add_file(path.to_path_buf(), seen, output);
+            true
+        }
+    }
+}
+
+fn expand_glob_match(
+    path: &Path,
+    seen: &mut HashSet<PathBuf>,
+    output: &mut Vec<InputSpec>,
+) -> bool {
+    if path.is_dir() {
+        collect_directory_files(path, seen, output)
     } else if supported(path) {
         add_file(path.to_path_buf(), seen, output);
         true
     } else {
         false
     }
+}
+
+fn collect_directory_files(
+    path: &Path,
+    seen: &mut HashSet<PathBuf>,
+    output: &mut Vec<InputSpec>,
+) -> bool {
+    let mut files = WalkDir::new(path)
+        .follow_links(false)
+        .into_iter()
+        .filter_map(Result::ok)
+        .filter(|entry| entry.file_type().is_file() && supported(entry.path()))
+        .map(|entry| entry.into_path())
+        .collect::<Vec<_>>();
+    files.sort_by_key(|a| normalized(a));
+    let matched = !files.is_empty();
+    for file in files {
+        add_file(file, seen, output);
+    }
+    matched
 }
 
 fn add_file(path: PathBuf, seen: &mut HashSet<PathBuf>, output: &mut Vec<InputSpec>) {
@@ -248,6 +266,31 @@ mod tests {
         assert!(matches!(
             resolve(&["definitely-missing/*.json".into()]).as_slice(),
             [InputSpec::Error(InputError::GlobNoMatch { .. })]
+        ));
+    }
+
+    #[test]
+    fn explicitly_specified_unsupported_file_is_typed() {
+        let directory = tempdir().unwrap();
+        let path = directory.path().join("input.txt");
+        fs::write(&path, "input").unwrap();
+
+        assert_eq!(
+            resolve(&[path.to_string_lossy().into()]),
+            vec![InputSpec::Error(InputError::UnsupportedFile { path })]
+        );
+    }
+
+    #[test]
+    fn missing_supported_file_remains_a_read_error() {
+        let directory = tempdir().unwrap();
+        let path = directory.path().join("missing.json");
+
+        let result = read_all(resolve(&[path.to_string_lossy().into()]), &mut &b""[..]);
+
+        assert!(matches!(
+            result.as_slice(),
+            [Err(InputError::Read { path: result_path, .. })] if result_path == &path
         ));
     }
 

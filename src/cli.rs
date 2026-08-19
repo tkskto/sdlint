@@ -11,7 +11,7 @@ pub struct Cli {
     pub inputs: Vec<String>,
 
     /// Output representation.
-    #[arg(long, value_enum, default_value_t = OutputFormat::Human)]
+    #[arg(long, value_enum, default_value_t = OutputFormat::Text)]
     pub format: OutputFormat,
 
     /// Lowest severity to display.
@@ -33,7 +33,7 @@ pub struct Cli {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
 pub enum OutputFormat {
-    Human,
+    Text,
     Json,
 }
 

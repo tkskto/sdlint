@@ -1,5 +1,0 @@
-# Changes to dependency and automation policy require maintainer review.
-/.github/ @tkskto
-/Cargo.toml @tkskto
-/Cargo.lock @tkskto
-/deny.toml @tkskto
