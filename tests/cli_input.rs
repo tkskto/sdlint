@@ -83,6 +83,33 @@ fn reports_an_error_diagnostic_and_returns_one() {
 }
 
 #[test]
+fn reports_missing_article_headline_as_warning() {
+    Command::cargo_bin("sdlint")
+        .unwrap()
+        .arg(fixture("article-missing-headline.json"))
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(
+            "google/article/headline-recommended",
+        ))
+        .stderr("");
+}
+
+#[test]
+fn article_headline_warning_can_fail_the_run() {
+    Command::cargo_bin("sdlint")
+        .unwrap()
+        .args(["--fail-on", "warning"])
+        .arg(fixture("article-missing-headline.json"))
+        .assert()
+        .code(1)
+        .stdout(predicate::str::contains(
+            "google/article/headline-recommended",
+        ))
+        .stderr("");
+}
+
+#[test]
 fn json_output_contains_diagnostics() {
     Command::cargo_bin("sdlint")
         .unwrap()
