@@ -33,6 +33,20 @@ An execution error means the requested lint run could not be carried out reliabl
 
 This boundary is intentional: malformed JSON is an execution error because no JSON-LD graph exists to validate, while a well-formed graph with a malformed schema.org value is a diagnostic.
 
+### Validation layers
+
+sdlint MUST keep structural JSON-LD validation separate from vocabulary and feature rules. Structural validation checks whether the input has the project-required JSON-LD shape, such as an object or array of objects and the presence of a context. Vocabulary and feature rules check whether a structurally valid graph satisfies schema.org constraints or the requirements of a specific search feature.
+
+These layers have different meanings and MUST NOT be combined into one growing generic rule function. For example, a missing @context is a structural validation error in the initial sdlint policy, while a missing headline for a feature that recommends or requires it belongs to that feature's rule family and may be an error or warning according to the provider's requirement.
+
+The structural validation layer SHOULD produce a validated intermediate model, such as JsonLdDocument containing JsonLdNode values, before vocabulary and feature rules run. Rules MUST consume that model instead of duplicating low-level JSON shape checks. The initial implementation is intentionally smaller than this target architecture; it provides only the baseline checks needed for the first linting slice and MUST be refactored before additional rule families are added.
+
+The distinction between these layers is based on the following sources, verified 2026-08-20 (UTC):
+
+* [JSON-LD 1.1](https://www.w3.org/TR/json-ld11/) — W3C syntax and document-structure specification.
+* [Schema.org data model](https://schema.org/docs/datamodel.html) — schema.org vocabulary, domains, ranges, and expected types.
+* [Introduction to How Structured Data Markup Works](https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data) — Google Search feature requirements and eligibility guidance.
+
 ## 4. Severity
 
 Rules have one of these stable severities:
