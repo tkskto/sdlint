@@ -2,6 +2,8 @@ use std::path::PathBuf;
 
 use clap::{Parser, ValueEnum};
 
+pub use crate::diagnostic::Severity;
+
 /// Lint schema.org structured data.
 #[derive(Debug, Clone, Parser)]
 #[command(name = "sdlint", version, about)]
@@ -37,17 +39,21 @@ pub enum OutputFormat {
     Json,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
-pub enum Severity {
-    Info,
-    Warning,
-    Error,
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
 pub enum FailOn {
     Error,
     Warning,
     Info,
     None,
+}
+
+impl FailOn {
+    pub fn matches(self, severity: Severity) -> bool {
+        match self {
+            Self::Error => severity == Severity::Error,
+            Self::Warning => matches!(severity, Severity::Warning | Severity::Error),
+            Self::Info => true,
+            Self::None => false,
+        }
+    }
 }

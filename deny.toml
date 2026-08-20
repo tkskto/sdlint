@@ -12,6 +12,8 @@ include-dev = true
 allow = [
     "MIT",
     "Apache-2.0",
+    "ISC",
+    "MPL-2.0",
     "Unicode-3.0",
     "Unlicense",
 ]
