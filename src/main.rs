@@ -1,7 +1,17 @@
+mod app;
+mod cli;
+mod diagnostic;
+mod input;
+mod lint;
+mod parse;
+mod report;
+mod rules;
+
 use std::{io, io::IsTerminal, process::ExitCode};
 
+use app::{RunOutcome, run};
 use clap::Parser;
-use sdlint::{RunOutcome, cli::Cli, run};
+use cli::Cli;
 
 fn main() -> ExitCode {
     let cli = Cli::parse();

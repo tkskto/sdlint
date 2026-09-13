@@ -11,6 +11,16 @@ fn fixture(name: &str) -> PathBuf {
 }
 
 #[test]
+fn requires_an_input_operand() {
+    Command::cargo_bin("sdlint")
+        .unwrap()
+        .assert()
+        .failure()
+        .code(2)
+        .stderr(predicate::str::contains("<INPUT>..."));
+}
+
+#[test]
 fn reads_stdin_when_dash_is_supplied() {
     Command::cargo_bin("sdlint")
         .unwrap()
@@ -110,6 +120,37 @@ fn article_headline_warning_can_fail_the_run() {
 }
 
 #[test]
+fn reports_missing_article_recommended_properties() {
+    let output = Command::cargo_bin("sdlint")
+        .unwrap()
+        .arg(fixture("article-missing-recommended-properties.json"))
+        .output()
+        .unwrap();
+
+    assert!(output.status.success());
+    assert!(output.stderr.is_empty());
+    let stdout = String::from_utf8(output.stdout).unwrap();
+
+    for rule_id in [
+        "schema/article/article-body-present",
+        "schema/article/article-section-present",
+        "schema/article/backstory-present",
+        "schema/article/page-end-present",
+        "schema/article/page-start-present",
+        "schema/article/pagination-present",
+        "schema/article/speakable-present",
+        "schema/article/word-count-present",
+        "google/article/author-recommended",
+        "google/article/date-published-recommended",
+        "google/article/date-modified-recommended",
+        "google/article/headline-recommended",
+        "google/article/image-recommended",
+    ] {
+        assert!(stdout.contains(rule_id));
+    }
+}
+
+#[test]
 fn json_output_contains_diagnostics() {
     Command::cargo_bin("sdlint")
         .unwrap()
@@ -172,5 +213,27 @@ fn malformed_json_is_an_execution_error() {
         .arg(fixture("invalid.json"))
         .assert()
         .code(2)
+        .stderr(predicate::str::contains("cannot parse"));
+}
+
+#[test]
+fn continues_linting_after_invalid_json_ld_in_html() {
+    let directory = tempdir().unwrap();
+    let path = directory.path().join("input.html");
+    fs::write(
+        &path,
+        r#"
+            <script type="application/ld+json">invalid</script>
+            <script type="application/ld+json">{"@type":"Organization"}</script>
+        "#,
+    )
+    .unwrap();
+
+    Command::cargo_bin("sdlint")
+        .unwrap()
+        .arg(path)
+        .assert()
+        .code(2)
+        .stdout(predicate::str::contains("core/jsonld-context-required"))
         .stderr(predicate::str::contains("cannot parse"));
 }
