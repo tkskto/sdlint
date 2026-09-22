@@ -1,5 +1,4 @@
 //! Deterministic expansion and acquisition of command-line inputs.
-
 use std::{
     collections::HashSet,
     fmt, fs,
@@ -12,18 +11,19 @@ use walkdir::WalkDir;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum InputSpec {
+    // Req. URLを渡せるように拡張できるか
     File(PathBuf),
     Stdin,
     Error(InputError),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub enum SourceId {
+pub enum SourceOrigin {
     Path(PathBuf),
     Stdin,
 }
 
-impl fmt::Display for SourceId {
+impl fmt::Display for SourceOrigin {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Path(path) => write!(f, "{}", path.display()),
@@ -33,8 +33,8 @@ impl fmt::Display for SourceId {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct SourceDocument {
-    pub source: SourceId,
+pub struct SourceText {
+    pub origin: SourceOrigin,
     pub text: String,
 }
 
@@ -52,62 +52,59 @@ pub enum InputError {
     DuplicateStdin,
 }
 
-/// Expands operands in their given order. An empty operand list means stdin.
-pub fn resolve(operands: &[String]) -> Vec<InputSpec> {
-    let defaults;
-    let operands = if operands.is_empty() {
-        defaults = vec!["-".to_owned()];
-        &defaults
-    } else {
-        operands
-    };
-    let mut output = Vec::new();
-    let mut paths = HashSet::new();
-    let mut saw_stdin = false;
+/// Expands operands in their given order.
+pub fn resolve(input_operand_list: &[String]) -> Vec<InputSpec> {
+    let mut input_spec_list = Vec::new();
+    let mut seen_path_set = HashSet::new();
+    let mut stdin_was_specified = false;
 
-    for operand in operands {
+    for operand in input_operand_list {
         if operand == "-" {
-            if saw_stdin {
-                output.push(InputSpec::Error(InputError::DuplicateStdin));
+            if stdin_was_specified {
+                input_spec_list.push(InputSpec::Error(InputError::DuplicateStdin));
             } else {
-                saw_stdin = true;
-                output.push(InputSpec::Stdin);
+                stdin_was_specified = true;
+                input_spec_list.push(InputSpec::Stdin);
             }
             continue;
         }
 
         if is_glob(operand) {
-            expand_glob(operand, &mut paths, &mut output);
+            expand_glob(operand, &mut seen_path_set, &mut input_spec_list);
         } else {
-            let _ = expand_explicit_path(Path::new(operand), &mut paths, &mut output);
+            expand_explicit_path(Path::new(operand), &mut seen_path_set, &mut input_spec_list);
         }
     }
-    output
+    input_spec_list
 }
 
 fn is_glob(value: &str) -> bool {
     value.bytes().any(|byte| matches!(byte, b'*' | b'?' | b'['))
 }
 
-fn expand_glob(pattern: &str, seen: &mut HashSet<PathBuf>, output: &mut Vec<InputSpec>) {
+fn expand_glob(
+    pattern: &str,
+    seen_path_set: &mut HashSet<PathBuf>,
+    input_spec_list: &mut Vec<InputSpec>,
+) {
     let entries = match glob::glob(pattern) {
         Ok(entries) => entries,
         Err(error) => {
-            output.push(InputSpec::Error(InputError::InvalidGlob {
+            input_spec_list.push(InputSpec::Error(InputError::InvalidGlob {
                 pattern: pattern.to_owned(),
                 message: error.to_string(),
             }));
             return;
         }
     };
-    let mut matches = entries.filter_map(Result::ok).collect::<Vec<_>>();
-    matches.sort_by_key(|a| normalized(a));
-    let mut matched_supported = false;
-    for path in matches {
-        matched_supported |= expand_glob_match(&path, seen, output);
+    let mut glob_match_list = entries.filter_map(Result::ok).collect::<Vec<_>>();
+    glob_match_list.sort();
+    let mut found_supported_file = false;
+    for path in glob_match_list {
+        found_supported_file |= expand_glob_match(&path, seen_path_set, input_spec_list);
     }
-    if !matched_supported {
-        output.push(InputSpec::Error(InputError::GlobNoMatch {
+    if !found_supported_file {
+        input_spec_list.push(InputSpec::Error(InputError::GlobNoMatch {
             pattern: pattern.to_owned(),
         }));
     }
@@ -115,33 +112,29 @@ fn expand_glob(pattern: &str, seen: &mut HashSet<PathBuf>, output: &mut Vec<Inpu
 
 fn expand_explicit_path(
     path: &Path,
-    seen: &mut HashSet<PathBuf>,
-    output: &mut Vec<InputSpec>,
-) -> bool {
+    seen_path_set: &mut HashSet<PathBuf>,
+    input_spec_list: &mut Vec<InputSpec>,
+) {
     if path.is_dir() {
-        collect_directory_files(path, seen, output)
+        collect_directory_files(path, seen_path_set, input_spec_list);
+    } else if path.exists() && !supported(path) {
+        input_spec_list.push(InputSpec::Error(InputError::UnsupportedFile {
+            path: path.to_path_buf(),
+        }));
     } else {
-        if path.exists() && !supported(path) {
-            output.push(InputSpec::Error(InputError::UnsupportedFile {
-                path: path.to_path_buf(),
-            }));
-            false
-        } else {
-            add_file(path.to_path_buf(), seen, output);
-            true
-        }
+        add_file(path.to_path_buf(), seen_path_set, input_spec_list);
     }
 }
 
 fn expand_glob_match(
     path: &Path,
-    seen: &mut HashSet<PathBuf>,
-    output: &mut Vec<InputSpec>,
+    seen_path_set: &mut HashSet<PathBuf>,
+    input_spec_list: &mut Vec<InputSpec>,
 ) -> bool {
     if path.is_dir() {
-        collect_directory_files(path, seen, output)
+        collect_directory_files(path, seen_path_set, input_spec_list)
     } else if supported(path) {
-        add_file(path.to_path_buf(), seen, output);
+        add_file(path.to_path_buf(), seen_path_set, input_spec_list);
         true
     } else {
         false
@@ -150,28 +143,32 @@ fn expand_glob_match(
 
 fn collect_directory_files(
     path: &Path,
-    seen: &mut HashSet<PathBuf>,
-    output: &mut Vec<InputSpec>,
+    seen_path_set: &mut HashSet<PathBuf>,
+    input_spec_list: &mut Vec<InputSpec>,
 ) -> bool {
-    let mut files = WalkDir::new(path)
+    let mut supported_file_list = WalkDir::new(path)
         .follow_links(false)
         .into_iter()
         .filter_map(Result::ok)
         .filter(|entry| entry.file_type().is_file() && supported(entry.path()))
         .map(|entry| entry.into_path())
         .collect::<Vec<_>>();
-    files.sort_by_key(|a| normalized(a));
-    let matched = !files.is_empty();
-    for file in files {
-        add_file(file, seen, output);
+    supported_file_list.sort();
+    let found_supported_file = !supported_file_list.is_empty();
+    for file in supported_file_list {
+        add_file(file, seen_path_set, input_spec_list);
     }
-    matched
+    found_supported_file
 }
 
-fn add_file(path: PathBuf, seen: &mut HashSet<PathBuf>, output: &mut Vec<InputSpec>) {
+fn add_file(
+    path: PathBuf,
+    seen_path_set: &mut HashSet<PathBuf>,
+    input_spec_list: &mut Vec<InputSpec>,
+) {
     let key = fs::canonicalize(&path).unwrap_or_else(|_| path.clone());
-    if seen.insert(key) {
-        output.push(InputSpec::File(path));
+    if seen_path_set.insert(key) {
+        input_spec_list.push(InputSpec::File(path));
     }
 }
 
@@ -186,22 +183,18 @@ fn supported(path: &Path) -> bool {
         })
 }
 
-fn normalized(path: &Path) -> String {
-    path.to_string_lossy().replace('\\', "/")
-}
-
-pub fn read_file(path: &Path) -> Result<SourceDocument, InputError> {
+pub fn read_file(path: &Path) -> Result<SourceText, InputError> {
     let text = fs::read_to_string(path).map_err(|error| InputError::Read {
         path: path.to_path_buf(),
         message: error.to_string(),
     })?;
-    Ok(SourceDocument {
-        source: SourceId::Path(path.to_path_buf()),
+    Ok(SourceText {
+        origin: SourceOrigin::Path(path.to_path_buf()),
         text: text.strip_prefix('\u{feff}').unwrap_or(&text).to_owned(),
     })
 }
 
-pub fn read_stdin(reader: &mut dyn Read) -> Result<SourceDocument, InputError> {
+pub fn read_stdin(reader: &mut dyn Read) -> Result<SourceText, InputError> {
     let mut text = String::new();
     reader
         .read_to_string(&mut text)
@@ -209,17 +202,17 @@ pub fn read_stdin(reader: &mut dyn Read) -> Result<SourceDocument, InputError> {
             path: PathBuf::from("<stdin>"),
             message: error.to_string(),
         })?;
-    Ok(SourceDocument {
-        source: SourceId::Stdin,
+    Ok(SourceText {
+        origin: SourceOrigin::Stdin,
         text: text.strip_prefix('\u{feff}').unwrap_or(&text).to_owned(),
     })
 }
 
 pub fn read_all(
-    specs: Vec<InputSpec>,
+    input_spec_list: Vec<InputSpec>,
     stdin: &mut dyn Read,
-) -> Vec<Result<SourceDocument, InputError>> {
-    specs
+) -> Vec<Result<SourceText, InputError>> {
+    input_spec_list
         .into_iter()
         .map(|spec| match spec {
             InputSpec::File(path) => read_file(&path),
@@ -235,8 +228,8 @@ mod tests {
     use tempfile::tempdir;
 
     #[test]
-    fn defaults_to_stdin_and_rejects_a_duplicate() {
-        assert_eq!(resolve(&[]), vec![InputSpec::Stdin]);
+    fn does_not_default_to_stdin_and_rejects_duplicate_stdin() {
+        assert!(resolve(&[]).is_empty());
         assert_eq!(
             resolve(&["-".into(), "-".into()]),
             vec![
@@ -252,13 +245,13 @@ mod tests {
         fs::write(directory.path().join("b.json"), "b").unwrap();
         fs::write(directory.path().join("a.json"), "a").unwrap();
         let pattern = format!("{}/*.json", directory.path().display());
-        let result = resolve(&[
+        let expanded_inputs = resolve(&[
             pattern,
             directory.path().join("a.json").to_string_lossy().into(),
         ]);
-        assert_eq!(result.len(), 2);
-        assert!(matches!(&result[0], InputSpec::File(path) if path.ends_with("a.json")));
-        assert!(matches!(&result[1], InputSpec::File(path) if path.ends_with("b.json")));
+        assert_eq!(expanded_inputs.len(), 2);
+        assert!(matches!(&expanded_inputs[0], InputSpec::File(path) if path.ends_with("a.json")));
+        assert!(matches!(&expanded_inputs[1], InputSpec::File(path) if path.ends_with("b.json")));
     }
 
     #[test]
@@ -286,18 +279,18 @@ mod tests {
         let directory = tempdir().unwrap();
         let path = directory.path().join("missing.json");
 
-        let result = read_all(resolve(&[path.to_string_lossy().into()]), &mut &b""[..]);
+        let source_text_list = read_all(resolve(&[path.to_string_lossy().into()]), &mut &b""[..]);
 
         assert!(matches!(
-            result.as_slice(),
-            [Err(InputError::Read { path: result_path, .. })] if result_path == &path
+            source_text_list.as_slice(),
+            [Err(InputError::Read {path: error_path, .. })] if error_path == &path
         ));
     }
 
     #[test]
     fn readers_remove_a_utf8_bom() {
-        let document = read_stdin(&mut "\u{feff}{}".as_bytes()).unwrap();
-        assert_eq!(document.text, "{}");
-        assert_eq!(document.source, SourceId::Stdin);
+        let source_text = read_stdin(&mut "\u{feff}{}".as_bytes()).unwrap();
+        assert_eq!(source_text.text, "{}");
+        assert_eq!(source_text.origin, SourceOrigin::Stdin);
     }
 }

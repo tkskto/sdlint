@@ -4,17 +4,17 @@ This document defines the observable command-line contract of sdlint. The key wo
 
 ## 1. Input
 
-The command accepts zero or more input operands:
+The command requires one or more input operands:
 
 ```text
-sdlint [options] [--] [FILE | DIRECTORY | GLOB | -]...
+sdlint [options] [--] <FILE | DIRECTORY | GLOB | ->...
 ```
 
 * A regular file is read as UTF-8. A UTF-8 BOM MAY be present and is ignored.
 * A file whose extension is “.html” or “.htm” is parsed as HTML and every script element whose type is “application/ld+json” is inspected.
 * A file whose extension is “.json”, “.jsonld”, or “.json-ld” is parsed as one JSON-LD document. The top level MAY be an object or an array.
 * A directory is searched recursively for the extensions above. Symbolic-link directories are not followed.
-* A single hyphen means standard input. It may occur at most once. Standard input is parsed as JSON-LD by default; the stdin-format option with the value “html” selects HTML. When there are no operands, sdlint reads standard input.
+* A single hyphen means standard input. It may occur at most once. Standard input is parsed as JSON-LD by default; the stdin-format option with the value “html” selects HTML.
 * An unsupported explicitly named file is an execution error. Unsupported files found while expanding a directory or glob are ignored.
 
 JSON-LD may use either an absolute schema.org context or the commonly used [https://schema.org](https://schema.org) context. Remote contexts are not fetched: linting MUST be deterministic and MUST NOT require network access.

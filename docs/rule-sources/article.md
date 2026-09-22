@@ -14,6 +14,19 @@ Verification date: 2026-07-26 (UTC). See the [source interpretation and maintena
 | authorship/dates | author, datePublished, and dateModified state authorship and publication/modification dates. | none (vocabulary) | none | schema.org-specific | [Article properties](https://schema.org/Article), 2026-07-26 |
 | presentation/content | headline, image, articleBody, articleSection, wordCount, and pagination properties describe the article and its presentation. | none (vocabulary) | none | schema.org-specific | same source, 2026-07-26 |
 
+The Schema.org presence rules in this rule family are linter recommendations, not Schema.org requirements. Omitting one does not make an Article invalid according to the Schema.org vocabulary.
+
+| Rule | Property | Requirement | Target feature | Origin | Source / verified |
+| --- | --- | --- | --- | --- | --- |
+| schema/article/article-body-present | articleBody | linter recommendation | Article content | sdlint policy based on schema.org vocabulary | [schema.org/Article](https://schema.org/Article), 2026-08-20 |
+| schema/article/article-section-present | articleSection | linter recommendation | Article classification | sdlint policy based on schema.org vocabulary | same source, 2026-08-20 |
+| schema/article/backstory-present | backstory | linter recommendation | Article context | sdlint policy based on schema.org vocabulary | same source, 2026-08-20 |
+| schema/article/page-end-present | pageEnd | linter recommendation | Article pagination | sdlint policy based on schema.org vocabulary | same source, 2026-08-20 |
+| schema/article/page-start-present | pageStart | linter recommendation | Article pagination | sdlint policy based on schema.org vocabulary | same source, 2026-08-20 |
+| schema/article/pagination-present | pagination | linter recommendation | Article pagination | sdlint policy based on schema.org vocabulary | same source, 2026-08-20 |
+| schema/article/speakable-present | speakable | linter recommendation | Article accessibility | sdlint policy based on schema.org vocabulary | same source, 2026-08-20 |
+| schema/article/word-count-present | wordCount | linter recommendation | Article content | sdlint policy based on schema.org vocabulary | same source, 2026-08-20 |
+
 ### Google Search Central requirements
 
 Target feature: Article appearance in Google Search, including article title, image, and date information. Google states that there are no required properties for Article structured data; all listed enhancement properties are recommended. Thus their absence is never a Google-required-property error.

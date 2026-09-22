@@ -2,14 +2,14 @@ use std::path::PathBuf;
 
 use clap::{Parser, ValueEnum};
 
-pub use crate::diagnostic::Severity;
+use crate::diagnostic::Severity;
 
 /// Lint schema.org structured data.
 #[derive(Debug, Clone, Parser)]
 #[command(name = "sdlint", version, about)]
 pub struct Cli {
     /// Files, directories, globs, or '-' for standard input.
-    #[arg(value_name = "INPUT")]
+    #[arg(value_name = "INPUT", required = true)]
     pub inputs: Vec<String>,
 
     /// Output representation.
