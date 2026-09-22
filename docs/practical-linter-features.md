@@ -8,13 +8,14 @@ In addition to structured data validation, sdlint should support gradual adoptio
 CLI / configuration
     -> Input selection (glob, exclude, ignore files)
     -> Extract / parse / normalize
-    -> Deterministic rule engine
-    -> Suppression and baseline filter
+    -> Resolve rule activation and severity
+    -> Deterministic rule engine (enabled rules only)
+    -> Diagnostic suppression and baseline filter
     -> Reporter
     -> Exit policy
 ```
 
-The Rule Engine produces unsuppressed diagnostics. Suppression, presentation, and exit-code evaluation happen later in the pipeline. Individual rules therefore do not need to know about CLI options, ignore files, or output formats.
+Rule activation and severity are resolved for each input before rule evaluation. A rule configured as off is not evaluated. The Rule Engine produces diagnostics only for enabled rules, while later diagnostic suppression, presentation, and exit-code evaluation remain separate stages. Individual rules therefore do not need to know about CLI options, ignore files, or output formats.
 
 ## Priorities
 
@@ -31,9 +32,9 @@ The Rule Engine produces unsuppressed diagnostics. Suppression, presentation, an
 
 ## Configuration File
 
-Configuration remains optional so that sdlint can be used with command-line arguments alone. Searching upward from every input file for `sdlint.toml` would be ambiguous when validating multiple inputs. Instead, sdlint searches upward once from the working directory and applies the same configuration to every input.
+Configuration remains optional so that sdlint can be used with command-line arguments alone. Searching upward from every input file for sdlint.toml would be ambiguous when validating multiple inputs. Instead, sdlint searches upward once from the working directory and applies the same configuration to every input.
 
-The precedence order is CLI options, then the sdlint.toml file, then built-in defaults. The specification must define whether each array-valued CLI option replaces or extends the configured value; it must not rely on implicit merging.
+The precedence order is CLI options, then the sdlint.toml file, then built-in defaults. The current implementation uses this precedence for fail-on; other array-valued CLI settings have not been added and MUST define replacement or extension semantics before they are introduced.
 
 ```toml
 [files]
@@ -41,24 +42,23 @@ ignore = ["dist/**", "vendor/**", "fixtures/invalid/**"]
 respect_gitignore = true
 
 [rules]
-"SDL001" = "error"
-"ARTICLE002" = "off"
-"FAQ*" = "warning"
-
-[cache]
-enabled = false
-directory = ".sdlintcache"
+"core/jsonld-context-required" = "error"
+"google/article/headline-recommended" = "off"
+"google/article/image-recommended" = "warning"
 
 [exit]
 fail_on = "error"
-max_warnings = 20
 
 [[overrides]]
 files = ["fixtures/**/*.html"]
-rules = { "SDL001" = "off" }
+rules = { "core/jsonld-context-required" = "off" }
 ```
 
-An exact Rule ID takes precedence over a wildcard. Ambiguous settings at the same precedence level are configuration errors rather than "last one wins." Unknown exact Rule IDs are execution errors so that typos cannot silently disable validation. A wildcard that currently matches no rules may remain valid to support shared configuration across rule-set versions.
+The accepted rule values are error, warning, info, and off. Unknown Rule IDs are execution errors so that typos cannot silently disable validation. Unknown configuration sections and keys are execution errors.
+
+The files.ignore and overrides.files patterns are matched against slash-separated paths relative to the working directory. The overrides.files patterns are case-insensitive across platforms. The .gitignore file is loaded from the directory containing the discovered sdlint.toml when respect_gitignore is true. Configured files.ignore patterns take precedence over .gitignore patterns, including through negation. More than one overrides entry matching the same input is a configuration error.
+
+The cache section and exit.max_warnings will be accepted only when their corresponding features are implemented; accepting settings that have no effect would conceal configuration mistakes.
 
 ## Ignoring Files and Suppressing Diagnostics
 
@@ -66,19 +66,20 @@ Excluding a file from validation and suppressing a particular diagnostic are dis
 
 ### File Exclusion
 
+Directory and glob discovery skip node_modules by default because dependency trees are not project-authored input. This standard discovery exclusion is independent of configured ignore rules. It does not apply when a supported file is named explicitly, and it is not disabled by --no-ignore.
+
 Support these ignore sources:
 
 - `files.ignore` in `sdlint.toml`
-- `.sdlintignore`
 - `--ignore-pattern <GLOB>`, repeatable on the command line
 - `--no-ignore`
 - Optional `.gitignore` support through `respect_gitignore`
 
 The behavior is:
 
-1. Explicitly named files are subject to ignore rules by default.
-2. If an explicitly named file is ignored, report that fact to stderr at the informational level rather than silently succeeding.
-3. `--no-ignore` disables `.gitignore`, `.sdlintignore`, configured ignore rules, and command-line ignore patterns.
+1. Ignore rules apply equally to directly named files and files discovered through a directory or glob.
+2. Files matching ignore rules are skipped silently.
+3. `--no-ignore` disables `.gitignore`, configured ignore rules, and command-line ignore patterns.
 4. Normalize matching paths to `/`-separated paths relative to the working directory.
 5. Document symlink traversal and case-sensitivity rules, and avoid validating the same underlying file more than once.
 
@@ -86,11 +87,11 @@ Prefer the Rust `ignore` crate for Git-compatible negation patterns and director
 
 ### Rule Suppression
 
-Use `[rules]` for project-wide suppression and `[[overrides]]` for path-specific suppression. Provide command-line options for temporary investigation:
+Use the rules table for project-wide rule activation and overrides for path-specific rule activation. Provide command-line options for temporary investigation:
 
 ```sh
-sdlint page.html --disable ARTICLE002 --disable FAQ003
-sdlint page.html --enable-only SDL001,BREADCRUMB001
+sdlint page.html --disable google/article/headline-recommended --disable google/article/image-recommended
+sdlint page.html --enable-only core/jsonld-context-required,google/article/headline-recommended
 ```
 
 In addition to the post-suppression diagnostic counts, the JSON summary includes `suppressedCount`. Suppressed diagnostics are omitted by default, with a possible `--show-suppressed` option for auditing.
@@ -98,7 +99,7 @@ In addition to the post-suppression diagnostic counts, the JSON summary includes
 Local suppression comments in HTML are useful, but JSON files cannot contain comments, which creates an asymmetry between input formats. They can also turn temporary exceptions into permanent markup. Do not implement local comments in the MVP. If added later, require a reason:
 
 ```html
-<!-- sdlint-disable-next-block ARTICLE002 -- reason: legacy CMS omits image -->
+<!-- sdlint-disable-next-block google/article/image-recommended -- reason: legacy CMS omits image -->
 <script type="application/ld+json">...</script>
 ```
 
@@ -195,7 +196,7 @@ After the rule set grows, add:
 
 ```sh
 sdlint --list-rules
-sdlint --explain BREADCRUMB002
+sdlint --explain google/article/headline-recommended
 ```
 
 `--explain` displays the Rule ID, severity, target types, deterministic/semantic category, schema.org/Google source category, description, remediation hint, reference URLs, and version in which it was introduced. Generate this output from `RuleMetadata` rather than duplicating reporter-specific text.
@@ -227,9 +228,10 @@ Do not mechanically create traits when the MVP has only one implementation. Star
 
 ### Ignore and Suppression
 
-- Precedence among `.sdlintignore`, `.gitignore`, configuration, and CLI patterns
+- Standard node_modules exclusion for directory and glob discovery, including explicit-file behavior
+- Precedence among `.gitignore`, configuration, and CLI patterns
 - Negated patterns, explicit files, and `--no-ignore`
-- Exact Rule IDs and wildcard patterns
+- Exact Rule IDs
 - Path matching for overrides
 - Suppressed diagnostics not affecting the exit code
 - Unknown and unused suppressions

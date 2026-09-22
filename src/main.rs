@@ -1,5 +1,6 @@
 mod app;
 mod cli;
+mod config;
 mod diagnostic;
 mod input;
 mod lint;
