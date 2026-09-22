@@ -7,8 +7,15 @@ use std::{
     path::{Path, PathBuf},
 };
 
+use clap::ValueEnum;
 use thiserror::Error;
 use walkdir::WalkDir;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
+pub enum SourceFormat {
+    Json,
+    Html,
+}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum InputSpec {
@@ -36,6 +43,7 @@ impl fmt::Display for SourceOrigin {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SourceText {
     pub origin: SourceOrigin,
+    pub format: SourceFormat,
     pub text: String,
 }
 
@@ -227,11 +235,27 @@ pub fn read_file(path: &Path) -> Result<SourceText, InputError> {
     })?;
     Ok(SourceText {
         origin: SourceOrigin::Path(path.to_path_buf()),
+        format: format_from_path(path),
         text: text.strip_prefix('\u{feff}').unwrap_or(&text).to_owned(),
     })
 }
 
-pub fn read_stdin(reader: &mut dyn Read) -> Result<SourceText, InputError> {
+fn format_from_path(path: &Path) -> SourceFormat {
+    match path
+        .extension()
+        .and_then(|extension| extension.to_str())
+        .map(str::to_ascii_lowercase)
+        .as_deref()
+    {
+        Some("html" | "htm") => SourceFormat::Html,
+        _ => SourceFormat::Json,
+    }
+}
+
+pub fn read_stdin(
+    reader: &mut dyn Read,
+    stdin_format: SourceFormat,
+) -> Result<SourceText, InputError> {
     let mut text = String::new();
     reader
         .read_to_string(&mut text)
@@ -241,6 +265,7 @@ pub fn read_stdin(reader: &mut dyn Read) -> Result<SourceText, InputError> {
         })?;
     Ok(SourceText {
         origin: SourceOrigin::Stdin,
+        format: stdin_format,
         text: text.strip_prefix('\u{feff}').unwrap_or(&text).to_owned(),
     })
 }
@@ -248,12 +273,13 @@ pub fn read_stdin(reader: &mut dyn Read) -> Result<SourceText, InputError> {
 pub fn read_all(
     input_spec_list: Vec<InputSpec>,
     stdin: &mut dyn Read,
+    stdin_format: SourceFormat,
 ) -> Vec<Result<SourceText, InputError>> {
     input_spec_list
         .into_iter()
         .map(|spec| match spec {
             InputSpec::File(path) => read_file(&path),
-            InputSpec::Stdin => read_stdin(stdin),
+            InputSpec::Stdin => read_stdin(stdin, stdin_format),
             InputSpec::Error(error) => Err(error),
         })
         .collect()
@@ -372,7 +398,11 @@ mod tests {
         let directory = tempdir().unwrap();
         let path = directory.path().join("missing.json");
 
-        let source_text_list = read_all(resolve(&[path.to_string_lossy().into()]), &mut &b""[..]);
+        let source_text_list = read_all(
+            resolve(&[path.to_string_lossy().into()]),
+            &mut &b""[..],
+            SourceFormat::Json,
+        );
 
         assert!(matches!(
             source_text_list.as_slice(),
@@ -382,8 +412,9 @@ mod tests {
 
     #[test]
     fn readers_remove_a_utf8_bom() {
-        let source_text = read_stdin(&mut "\u{feff}{}".as_bytes()).unwrap();
+        let source_text = read_stdin(&mut "\u{feff}{}".as_bytes(), SourceFormat::Json).unwrap();
         assert_eq!(source_text.text, "{}");
         assert_eq!(source_text.origin, SourceOrigin::Stdin);
+        assert_eq!(source_text.format, SourceFormat::Json);
     }
 }

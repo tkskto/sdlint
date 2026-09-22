@@ -1,6 +1,6 @@
 use clap::{Parser, ValueEnum};
 
-use crate::diagnostic::Severity;
+use crate::{diagnostic::Severity, input::SourceFormat};
 
 /// Lint schema.org structured data.
 #[derive(Debug, Clone, Parser)]
@@ -9,6 +9,10 @@ pub struct Cli {
     /// Files, directories, globs, or '-' for standard input.
     #[arg(value_name = "INPUT", required = true)]
     pub inputs: Vec<String>,
+
+    /// Format of standard input.
+    #[arg(long, value_enum, default_value_t = SourceFormat::Json)]
+    pub stdin_format: SourceFormat,
 
     /// Output representation.
     #[arg(long, value_enum, default_value_t = OutputFormat::Text)]

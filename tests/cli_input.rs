@@ -21,7 +21,7 @@ fn requires_an_input_operand() {
 }
 
 #[test]
-fn reads_stdin_when_dash_is_supplied() {
+fn stdin_defaults_to_json_ld() {
     Command::cargo_bin("sdlint")
         .unwrap()
         .arg("-")
@@ -29,6 +29,66 @@ fn reads_stdin_when_dash_is_supplied() {
         .assert()
         .success()
         .stderr("");
+}
+
+#[test]
+fn reads_html_from_stdin_when_format_is_selected() {
+    Command::cargo_bin("sdlint")
+        .unwrap()
+        .args(["--stdin-format", "html", "-"])
+        .write_stdin(
+            r#"<script type="application/ld+json">
+                {"@context":"https://schema.org","@type":"Organization"}
+            </script>"#,
+        )
+        .assert()
+        .success()
+        .stdout("")
+        .stderr("");
+}
+
+#[test]
+fn preserves_json_ld_block_order_in_html_stdin() {
+    let output = Command::cargo_bin("sdlint")
+        .unwrap()
+        .args(["--stdin-format", "html", "-"])
+        .write_stdin(
+            r#"
+                <script type="application/ld+json">{"@context":"https://schema.org"}</script>
+                <script type="application/ld+json">{"@type":"Organization"}</script>
+            "#,
+        )
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(1));
+    assert!(output.stderr.is_empty());
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    let first_block = stdout.find("<stdin> (JSON-LD 1)").unwrap();
+    let second_block = stdout.find("<stdin> (JSON-LD 2)").unwrap();
+    assert!(first_block < second_block);
+}
+
+#[test]
+fn preserves_json_ld_object_order_in_an_array() {
+    let output = Command::cargo_bin("sdlint")
+        .unwrap()
+        .arg("-")
+        .write_stdin(
+            r#"[
+                {"@context":"https://schema.org"},
+                {"@type":"Organization"}
+            ]"#,
+        )
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(1));
+    assert!(output.stderr.is_empty());
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    let first_object = stdout.find("JSON-LD object 1").unwrap();
+    let second_object = stdout.find("JSON-LD object 2").unwrap();
+    assert!(first_object < second_object);
 }
 
 #[test]
@@ -151,6 +211,49 @@ fn reports_missing_article_recommended_properties() {
 }
 
 #[test]
+fn diagnostics_for_one_object_are_rule_id_sorted_in_text_and_json() {
+    let path = fixture("article-missing-recommended-properties.json");
+    let text_output = Command::cargo_bin("sdlint")
+        .unwrap()
+        .arg(&path)
+        .output()
+        .unwrap();
+    let json_output = Command::cargo_bin("sdlint")
+        .unwrap()
+        .args(["--format", "json"])
+        .arg(path)
+        .output()
+        .unwrap();
+
+    assert!(text_output.status.success());
+    assert!(json_output.status.success());
+    let text_stdout = String::from_utf8(text_output.stdout).unwrap();
+    let text_rule_id_list = text_stdout
+        .lines()
+        .filter_map(|line| {
+            line.split_ascii_whitespace()
+                .find(|word| word.contains('/') && word.ends_with(':'))
+                .map(|rule_id| rule_id.trim_end_matches(':').to_owned())
+        })
+        .collect::<Vec<_>>();
+    let json_records: serde_json::Value = serde_json::from_slice(&json_output.stdout).unwrap();
+    let json_rule_id_list = json_records
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|record| record["rule_id"].as_str().unwrap().to_owned())
+        .collect::<Vec<_>>();
+
+    assert!(text_rule_id_list.len() > 1);
+    assert!(
+        text_rule_id_list
+            .windows(2)
+            .all(|pair| pair[0].as_bytes() <= pair[1].as_bytes())
+    );
+    assert_eq!(json_rule_id_list, text_rule_id_list);
+}
+
+#[test]
 fn json_output_contains_diagnostics() {
     Command::cargo_bin("sdlint")
         .unwrap()
@@ -204,6 +307,28 @@ fn accepts_multiple_inputs() {
         .success()
         .stdout("")
         .stderr("");
+}
+
+#[test]
+fn preserves_input_operand_order() {
+    let directory = tempdir().unwrap();
+    let first_path = directory.path().join("first.json");
+    let second_path = directory.path().join("second.json");
+    fs::write(&first_path, r#"{"@context":"https://schema.org"}"#).unwrap();
+    fs::write(&second_path, r#"{"@type":"Organization"}"#).unwrap();
+
+    let output = Command::cargo_bin("sdlint")
+        .unwrap()
+        .args([&first_path, &second_path])
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(1));
+    assert!(output.stderr.is_empty());
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    let first_input = stdout.find(first_path.to_str().unwrap()).unwrap();
+    let second_input = stdout.find(second_path.to_str().unwrap()).unwrap();
+    assert!(first_input < second_input);
 }
 
 #[test]

@@ -1,10 +1,8 @@
-use std::path::Path;
-
 use scraper::{Html, Selector};
 use serde_json::Value;
 use thiserror::Error;
 
-use crate::input::{SourceOrigin, SourceText};
+use crate::input::{SourceFormat, SourceOrigin, SourceText};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct StructuredData {
@@ -28,9 +26,9 @@ pub enum ParseError {
 }
 
 pub fn parse_source_text(source_text: &SourceText) -> Vec<Result<StructuredData, ParseError>> {
-    match &source_text.origin {
-        SourceOrigin::Path(path) if is_html(path) => parse_html(source_text),
-        _ => vec![parse_json(source_text, 0)],
+    match source_text.format {
+        SourceFormat::Json => vec![parse_json(source_text, 0)],
+        SourceFormat::Html => parse_html(source_text),
     }
 }
 
@@ -48,6 +46,7 @@ fn parse_html(source_text: &SourceText) -> Vec<Result<StructuredData, ParseError
             let json_ld_index = parsed_json_ld_list.len();
             let json_ld_source = SourceText {
                 origin: source_text.origin.clone(),
+                format: SourceFormat::Json,
                 text: element.inner_html(),
             };
             parsed_json_ld_list.push(parse_json(&json_ld_source, json_ld_index));
@@ -81,12 +80,6 @@ fn parse_json(
     })
 }
 
-fn is_html(path: &Path) -> bool {
-    path.extension()
-        .and_then(|extension| extension.to_str())
-        .is_some_and(|extension| matches!(extension.to_ascii_lowercase().as_str(), "html" | "htm"))
-}
-
 fn format_source_with_json_ld_number(source_origin: &SourceOrigin, json_ld_index: usize) -> String {
     format!("{} (JSON-LD {})", source_origin, json_ld_index + 1)
 }
@@ -99,6 +92,7 @@ mod tests {
     fn parses_json_object() {
         let source_text = SourceText {
             origin: SourceOrigin::Path("input.json".into()),
+            format: SourceFormat::Json,
             text: r#"{"@context":"https://schema.org"}"#.into(),
         };
 
@@ -112,6 +106,7 @@ mod tests {
     fn extracts_json_ld_scripts_from_html() {
         let source_text = SourceText {
             origin: SourceOrigin::Path("input.html".into()),
+            format: SourceFormat::Html,
             text: r#"
                 <script type="application/json">{"ignored":true}</script>
                 <script type="application/ld+json">{"@type":"Article"}</script>
@@ -131,6 +126,7 @@ mod tests {
     fn continues_after_invalid_json_ld_in_html() {
         let source_text = SourceText {
             origin: SourceOrigin::Path("input.html".into()),
+            format: SourceFormat::Html,
             text: r#"
                 <script type="application/ld+json">{"@type":"Article"}</script>
                 <script type="application/ld+json">invalid</script>

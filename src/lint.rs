@@ -109,6 +109,15 @@ fn lint_top_level_object(
         object,
         resolve_rule_severity,
     ));
+    diagnostics.sort_by(|left, right| {
+        match (&left.location, &right.location) {
+            (Some(left), Some(right)) => (left.line, left.column).cmp(&(right.line, right.column)),
+            (Some(_), None) => std::cmp::Ordering::Less,
+            (None, Some(_)) => std::cmp::Ordering::Greater,
+            (None, None) => std::cmp::Ordering::Equal,
+        }
+        .then_with(|| left.rule_id.as_bytes().cmp(right.rule_id.as_bytes()))
+    });
     diagnostics
 }
 
