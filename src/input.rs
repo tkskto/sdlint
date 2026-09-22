@@ -1,6 +1,7 @@
 //! Deterministic expansion and acquisition of command-line inputs.
 use std::{
     collections::HashSet,
+    ffi::OsStr,
     fmt, fs,
     io::Read,
     path::{Path, PathBuf},
@@ -53,7 +54,15 @@ pub enum InputError {
 }
 
 /// Expands operands in their given order.
+#[cfg(test)]
 pub fn resolve(input_operand_list: &[String]) -> Vec<InputSpec> {
+    resolve_with_filter(input_operand_list, &|_| false)
+}
+
+pub fn resolve_with_filter(
+    input_operand_list: &[String],
+    should_exclude: &dyn Fn(&Path) -> bool,
+) -> Vec<InputSpec> {
     let mut input_spec_list = Vec::new();
     let mut seen_path_set = HashSet::new();
     let mut stdin_was_specified = false;
@@ -70,9 +79,19 @@ pub fn resolve(input_operand_list: &[String]) -> Vec<InputSpec> {
         }
 
         if is_glob(operand) {
-            expand_glob(operand, &mut seen_path_set, &mut input_spec_list);
+            expand_glob(
+                operand,
+                &mut seen_path_set,
+                &mut input_spec_list,
+                should_exclude,
+            );
         } else {
-            expand_explicit_path(Path::new(operand), &mut seen_path_set, &mut input_spec_list);
+            expand_explicit_path(
+                Path::new(operand),
+                &mut seen_path_set,
+                &mut input_spec_list,
+                should_exclude,
+            );
         }
     }
     input_spec_list
@@ -86,6 +105,7 @@ fn expand_glob(
     pattern: &str,
     seen_path_set: &mut HashSet<PathBuf>,
     input_spec_list: &mut Vec<InputSpec>,
+    should_exclude: &dyn Fn(&Path) -> bool,
 ) {
     let entries = match glob::glob(pattern) {
         Ok(entries) => entries,
@@ -101,7 +121,8 @@ fn expand_glob(
     glob_match_list.sort();
     let mut found_supported_file = false;
     for path in glob_match_list {
-        found_supported_file |= expand_glob_match(&path, seen_path_set, input_spec_list);
+        found_supported_file |=
+            expand_glob_match(&path, seen_path_set, input_spec_list, should_exclude);
     }
     if !found_supported_file {
         input_spec_list.push(InputSpec::Error(InputError::GlobNoMatch {
@@ -114,14 +135,15 @@ fn expand_explicit_path(
     path: &Path,
     seen_path_set: &mut HashSet<PathBuf>,
     input_spec_list: &mut Vec<InputSpec>,
+    should_exclude: &dyn Fn(&Path) -> bool,
 ) {
     if path.is_dir() {
-        collect_directory_files(path, seen_path_set, input_spec_list);
+        collect_directory_files(path, seen_path_set, input_spec_list, should_exclude);
     } else if path.exists() && !supported(path) {
         input_spec_list.push(InputSpec::Error(InputError::UnsupportedFile {
             path: path.to_path_buf(),
         }));
-    } else {
+    } else if !should_exclude(path) {
         add_file(path.to_path_buf(), seen_path_set, input_spec_list);
     }
 }
@@ -130,11 +152,17 @@ fn expand_glob_match(
     path: &Path,
     seen_path_set: &mut HashSet<PathBuf>,
     input_spec_list: &mut Vec<InputSpec>,
+    should_exclude: &dyn Fn(&Path) -> bool,
 ) -> bool {
+    if is_standard_discovery_excluded(path) {
+        return true;
+    }
     if path.is_dir() {
-        collect_directory_files(path, seen_path_set, input_spec_list)
+        collect_directory_files(path, seen_path_set, input_spec_list, should_exclude)
     } else if supported(path) {
-        add_file(path.to_path_buf(), seen_path_set, input_spec_list);
+        if !should_exclude(path) {
+            add_file(path.to_path_buf(), seen_path_set, input_spec_list);
+        }
         true
     } else {
         false
@@ -145,10 +173,12 @@ fn collect_directory_files(
     path: &Path,
     seen_path_set: &mut HashSet<PathBuf>,
     input_spec_list: &mut Vec<InputSpec>,
+    should_exclude: &dyn Fn(&Path) -> bool,
 ) -> bool {
     let mut supported_file_list = WalkDir::new(path)
         .follow_links(false)
         .into_iter()
+        .filter_entry(|entry| entry.depth() == 0 || !is_standard_discovery_excluded(entry.path()))
         .filter_map(Result::ok)
         .filter(|entry| entry.file_type().is_file() && supported(entry.path()))
         .map(|entry| entry.into_path())
@@ -156,9 +186,16 @@ fn collect_directory_files(
     supported_file_list.sort();
     let found_supported_file = !supported_file_list.is_empty();
     for file in supported_file_list {
-        add_file(file, seen_path_set, input_spec_list);
+        if !should_exclude(&file) {
+            add_file(file, seen_path_set, input_spec_list);
+        }
     }
     found_supported_file
+}
+
+fn is_standard_discovery_excluded(path: &Path) -> bool {
+    path.components()
+        .any(|component| component.as_os_str() == OsStr::new("node_modules"))
 }
 
 fn add_file(
@@ -252,6 +289,62 @@ mod tests {
         assert_eq!(expanded_inputs.len(), 2);
         assert!(matches!(&expanded_inputs[0], InputSpec::File(path) if path.ends_with("a.json")));
         assert!(matches!(&expanded_inputs[1], InputSpec::File(path) if path.ends_with("b.json")));
+    }
+
+    #[test]
+    fn directory_discovery_skips_node_modules() {
+        let directory = tempdir().unwrap();
+        let node_modules_directory = directory.path().join("node_modules/package");
+        let target_directory = directory.path().join("target");
+        fs::create_dir_all(&node_modules_directory).unwrap();
+        fs::create_dir(&target_directory).unwrap();
+        fs::write(directory.path().join("page.json"), "{}").unwrap();
+        fs::write(node_modules_directory.join("package.json"), "{}").unwrap();
+        fs::write(target_directory.join("generated.json"), "{}").unwrap();
+
+        let expanded_inputs = resolve(&[directory.path().to_string_lossy().into()]);
+
+        assert_eq!(expanded_inputs.len(), 2);
+        assert!(matches!(
+            &expanded_inputs[0],
+            InputSpec::File(path) if path.ends_with("page.json")
+        ));
+        assert!(matches!(
+            &expanded_inputs[1],
+            InputSpec::File(path) if path.ends_with("target/generated.json")
+        ));
+    }
+
+    #[test]
+    fn glob_discovery_skips_node_modules() {
+        let directory = tempdir().unwrap();
+        let node_modules_directory = directory.path().join("node_modules/package");
+        fs::create_dir_all(&node_modules_directory).unwrap();
+        fs::write(directory.path().join("page.json"), "{}").unwrap();
+        fs::write(node_modules_directory.join("package.json"), "{}").unwrap();
+        let pattern = format!("{}/**/*.json", directory.path().display());
+
+        let expanded_inputs = resolve(&[pattern]);
+
+        assert_eq!(expanded_inputs.len(), 1);
+        assert!(matches!(
+            &expanded_inputs[0],
+            InputSpec::File(path) if path.ends_with("page.json")
+        ));
+    }
+
+    #[test]
+    fn explicitly_named_node_modules_file_is_included() {
+        let directory = tempdir().unwrap();
+        let node_modules_directory = directory.path().join("node_modules/package");
+        fs::create_dir_all(&node_modules_directory).unwrap();
+        let path = node_modules_directory.join("package.json");
+        fs::write(&path, "{}").unwrap();
+
+        assert_eq!(
+            resolve(&[path.to_string_lossy().into()]),
+            vec![InputSpec::File(path)]
+        );
     }
 
     #[test]

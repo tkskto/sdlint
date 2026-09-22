@@ -1,5 +1,3 @@
-use std::path::PathBuf;
-
 use clap::{Parser, ValueEnum};
 
 use crate::diagnostic::Severity;
@@ -20,13 +18,9 @@ pub struct Cli {
     #[arg(long, value_enum, default_value_t = Severity::Info)]
     pub severity: Severity,
 
-    /// Lowest severity that makes linting fail.
-    #[arg(long, value_enum, default_value_t = FailOn::Error)]
-    pub fail_on: FailOn,
-
-    /// Ruleset configuration file to load.
-    #[arg(long, value_name = "FILE")]
-    pub ruleset: Option<PathBuf>,
+    /// Lowest severity that makes linting fail; defaults to configured value, then error.
+    #[arg(long, value_enum)]
+    pub fail_on: Option<FailOn>,
 
     /// Disable colored output.
     #[arg(long)]

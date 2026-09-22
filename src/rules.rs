@@ -5,6 +5,26 @@ use crate::diagnostic::{Diagnostic, Severity};
 mod article;
 mod definitions;
 
+pub(crate) const JSONLD_CONTEXT_REQUIRED_RULE_ID: &str = "core/jsonld-context-required";
+pub(crate) const JSONLD_OBJECT_REQUIRED_RULE_ID: &str = "core/jsonld-object-required";
+pub(crate) const JSONLD_TYPE_RECOMMENDED_RULE_ID: &str = "core/jsonld-type-recommended";
+
+const CORE_RULE_IDS: &[&str] = &[
+    JSONLD_CONTEXT_REQUIRED_RULE_ID,
+    JSONLD_OBJECT_REQUIRED_RULE_ID,
+    JSONLD_TYPE_RECOMMENDED_RULE_ID,
+];
+
+pub(crate) fn known_rule_ids() -> Vec<&'static str> {
+    CORE_RULE_IDS
+        .iter()
+        .copied()
+        .chain(definitions::ALL.iter().map(|rule| rule.id))
+        .collect()
+}
+
+pub(crate) type RuleSeverityResolver<'a> = dyn Fn(&str, Severity) -> Option<Severity> + 'a;
+
 pub(crate) struct RuleContext<'a> {
     source: &'a str,
     object_index: usize,
@@ -31,6 +51,7 @@ pub(crate) fn check_object(
     source: &str,
     object_index: usize,
     object: &Map<String, Value>,
+    resolve_rule_severity: &RuleSeverityResolver<'_>,
 ) -> Vec<Diagnostic> {
     let context = RuleContext {
         source,
@@ -40,21 +61,24 @@ pub(crate) fn check_object(
 
     definitions::ALL
         .iter()
-        .filter(|rule| {
-            matches_condition(&rule.applies_to, &context)
-                && !matches_assertion(&rule.assertion, &context)
-        })
-        .map(|rule| {
-            Diagnostic::new(
+        .filter_map(|rule| {
+            let severity = resolve_rule_severity(rule.id, rule.severity)?;
+            if !matches_condition(&rule.applies_to, &context)
+                || matches_assertion(&rule.assertion, &context)
+            {
+                return None;
+            }
+
+            Some(Diagnostic::new(
                 context.source,
                 rule.id,
-                rule.severity,
+                severity,
                 format!(
                     "{} (JSON-LD object {})",
                     rule.message,
                     context.object_index + 1
                 ),
-            )
+            ))
         })
         .collect()
 }

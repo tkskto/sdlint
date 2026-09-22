@@ -13,7 +13,7 @@ sdlint [options] [--] <FILE | DIRECTORY | GLOB | ->...
 * A regular file is read as UTF-8. A UTF-8 BOM MAY be present and is ignored.
 * A file whose extension is “.html” or “.htm” is parsed as HTML and every script element whose type is “application/ld+json” is inspected.
 * A file whose extension is “.json”, “.jsonld”, or “.json-ld” is parsed as one JSON-LD document. The top level MAY be an object or an array.
-* A directory is searched recursively for the extensions above. Symbolic-link directories are not followed.
+* A directory is searched recursively for the extensions above. Symbolic-link directories are not followed, and directories named node_modules are not traversed.
 * A single hyphen means standard input. It may occur at most once. Standard input is parsed as JSON-LD by default; the stdin-format option with the value “html” selects HTML.
 * An unsupported explicitly named file is an execution error. Unsupported files found while expanding a directory or glob are ignored.
 
@@ -23,7 +23,7 @@ JSON-LD may use either an absolute schema.org context or the commonly used [http
 
 A glob is an operand containing an asterisk, question mark, or opening square bracket and is expanded by sdlint when the shell has not already expanded it. A single asterisk and a question mark do not cross a path separator; a double asterisk matches zero or more directories. Matching uses a forward slash as the logical separator, including on Windows. Hidden path components are matched only when the corresponding pattern component begins with a period.
 
-Expansion is relative to the current working directory. Results are normalized and sorted by Unicode code-point order before duplicate paths are removed. A file selected by multiple operands is linted once, at the position of its first operand. A glob that matches no supported file is an execution error. Quote a glob to ensure these rules, rather than the invoking shell's rules, apply.
+Expansion is relative to the current working directory. Glob expansion excludes paths containing a directory component named node_modules. This standard discovery exclusion applies only to directory and glob operands; a supported file inside node_modules is linted when named explicitly. Results are normalized and sorted by Unicode code-point order before duplicate paths are removed. A file selected by multiple operands is linted once, at the position of its first operand. A glob that matches no supported file is an execution error. Quote a glob to ensure these rules, rather than the invoking shell's rules, apply.
 
 ## 3. Diagnostics and execution errors
 

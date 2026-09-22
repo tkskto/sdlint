@@ -237,3 +237,204 @@ fn continues_linting_after_invalid_json_ld_in_html() {
         .stdout(predicate::str::contains("core/jsonld-context-required"))
         .stderr(predicate::str::contains("cannot parse"));
 }
+
+#[test]
+fn loads_sdlint_toml_and_applies_rule_settings() {
+    let directory = tempdir().unwrap();
+    let article_path = directory.path().join("article.json");
+    fs::copy(fixture("article-missing-headline.json"), &article_path).unwrap();
+    fs::write(
+        directory.path().join("sdlint.toml"),
+        r#"
+            [rules]
+            "google/article/headline-recommended" = "error"
+        "#,
+    )
+    .unwrap();
+
+    Command::cargo_bin("sdlint")
+        .unwrap()
+        .current_dir(directory.path())
+        .arg("article.json")
+        .assert()
+        .code(1)
+        .stdout(predicate::str::contains(
+            "error google/article/headline-recommended",
+        ));
+}
+
+#[test]
+fn command_line_fail_on_takes_precedence_over_configuration() {
+    let directory = tempdir().unwrap();
+    let article_path = directory.path().join("article.json");
+    fs::copy(fixture("article-missing-headline.json"), &article_path).unwrap();
+    fs::write(
+        directory.path().join("sdlint.toml"),
+        r#"
+            [exit]
+            fail_on = "warning"
+        "#,
+    )
+    .unwrap();
+
+    Command::cargo_bin("sdlint")
+        .unwrap()
+        .current_dir(directory.path())
+        .args(["--fail-on", "none", "article.json"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(
+            "google/article/headline-recommended",
+        ));
+}
+
+#[test]
+fn configured_fail_on_controls_warning_exit_status() {
+    let directory = tempdir().unwrap();
+    fs::copy(
+        fixture("article-missing-headline.json"),
+        directory.path().join("article.json"),
+    )
+    .unwrap();
+    fs::write(
+        directory.path().join("sdlint.toml"),
+        r#"
+            [exit]
+            fail_on = "warning"
+        "#,
+    )
+    .unwrap();
+
+    Command::cargo_bin("sdlint")
+        .unwrap()
+        .current_dir(directory.path())
+        .arg("article.json")
+        .assert()
+        .code(1)
+        .stdout(predicate::str::contains(
+            "google/article/headline-recommended",
+        ));
+}
+
+#[test]
+fn applies_path_specific_rule_override() {
+    let directory = tempdir().unwrap();
+    let fixture_directory = directory.path().join("fixtures");
+    fs::create_dir(&fixture_directory).unwrap();
+    fs::copy(
+        fixture("article-missing-headline.json"),
+        fixture_directory.join("article.json"),
+    )
+    .unwrap();
+    fs::write(
+        directory.path().join("sdlint.toml"),
+        r#"
+            [rules]
+            "google/article/headline-recommended" = "error"
+
+            [[overrides]]
+            files = ["fixtures/*.json"]
+            rules = { "google/article/headline-recommended" = "off" }
+        "#,
+    )
+    .unwrap();
+
+    Command::cargo_bin("sdlint")
+        .unwrap()
+        .current_dir(directory.path())
+        .arg("fixtures/article.json")
+        .assert()
+        .success()
+        .stdout("");
+}
+
+#[test]
+fn silently_ignores_a_file_matching_configured_patterns() {
+    let directory = tempdir().unwrap();
+    fs::write(directory.path().join("ignored.json"), "invalid").unwrap();
+    fs::write(
+        directory.path().join("sdlint.toml"),
+        r#"
+            [files]
+            ignore = ["ignored.json"]
+        "#,
+    )
+    .unwrap();
+
+    Command::cargo_bin("sdlint")
+        .unwrap()
+        .current_dir(directory.path())
+        .arg("ignored.json")
+        .assert()
+        .success()
+        .stdout("")
+        .stderr("");
+}
+
+#[test]
+fn respects_gitignore_when_enabled() {
+    let directory = tempdir().unwrap();
+    fs::write(directory.path().join("ignored.json"), "invalid").unwrap();
+    fs::write(directory.path().join(".gitignore"), "ignored.json\n").unwrap();
+    fs::write(
+        directory.path().join("sdlint.toml"),
+        r#"
+            [files]
+            respect_gitignore = true
+        "#,
+    )
+    .unwrap();
+
+    Command::cargo_bin("sdlint")
+        .unwrap()
+        .current_dir(directory.path())
+        .arg("ignored.json")
+        .assert()
+        .success()
+        .stdout("")
+        .stderr("");
+}
+
+#[test]
+fn rejects_unknown_configuration_keys() {
+    let directory = tempdir().unwrap();
+    fs::write(
+        directory.path().join("sdlint.toml"),
+        r#"
+            [files]
+            unknown = true
+        "#,
+    )
+    .unwrap();
+
+    Command::cargo_bin("sdlint")
+        .unwrap()
+        .current_dir(directory.path())
+        .arg(fixture("valid.json"))
+        .assert()
+        .code(2)
+        .stdout("")
+        .stderr(predicate::str::contains("unknown field `unknown`"));
+}
+
+#[test]
+fn rejects_unknown_rule_ids() {
+    let directory = tempdir().unwrap();
+    fs::write(
+        directory.path().join("sdlint.toml"),
+        r#"
+            [rules]
+            "google/article/typo" = "off"
+        "#,
+    )
+    .unwrap();
+
+    Command::cargo_bin("sdlint")
+        .unwrap()
+        .current_dir(directory.path())
+        .arg(fixture("valid.json"))
+        .assert()
+        .code(2)
+        .stdout("")
+        .stderr(predicate::str::contains("unknown Rule ID"));
+}
