@@ -43,7 +43,7 @@ pub fn run(
         input::resolve_with_filter(&cli.inputs, &|path| loaded_config.should_ignore(path));
     let mut had_execution_error = false;
     let mut diagnostic_list = Vec::new();
-    let source_text_list = input::read_all(input_spec_list, stdin);
+    let source_text_list = input::read_all(input_spec_list, stdin, cli.stdin_format);
 
     for source_text in source_text_list {
         had_execution_error |=
