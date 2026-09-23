@@ -45,6 +45,14 @@ Common options:
 
 Run `sdlint --help` for the complete command-line interface.
 
+## Output
+
+sdlint collects diagnostics while processing inputs and writes them to standard output after processing finishes. Text output contains one diagnostic per line. JSON output is an array of diagnostic objects with source, location, rule_id, severity, and message fields; it does not include execution errors, a versioned envelope, or summary counts.
+
+Execution errors are separate from diagnostics and are written to standard error when they occur. Because diagnostics are buffered while execution errors are written immediately, their relative order across standard output and standard error is not defined.
+
+The --severity option controls which diagnostics are displayed. Hidden diagnostics are still evaluated and can make the command return exit code 1 according to --fail-on. Any execution error makes the command return exit code 2, which takes precedence over diagnostic failures.
+
 ## Configuration
 
 Configuration is optional. Starting at the working directory, sdlint searches parent directories for the nearest sdlint.toml and applies that one configuration to every input in the run.

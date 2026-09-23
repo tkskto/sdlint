@@ -31,6 +31,8 @@ A diagnostic reports that successfully acquired input does not satisfy a lint ru
 
 An execution error means the requested lint run could not be carried out reliably. Examples include an unreadable file, malformed HTML/JSON/JSON-LD, invalid CLI option, unsupported explicit input, unmatched glob, duplicate standard-input operands, or failure to write output. Execution errors have no Rule ID and MUST NOT be reported as lint diagnostics. Processing SHOULD continue after a per-input execution error when doing so is safe; command-usage and output-write errors are fatal.
 
+Diagnostics are collected during processing and written to standard output after all inputs have been processed. Execution errors are written to standard error when they occur. The relative order of messages across standard output and standard error is not defined, and consumers MUST NOT merge the two streams and interpret the merged order as an input-processing order.
+
 This boundary is intentional: malformed JSON is an execution error because no JSON-LD graph exists to validate, while a well-formed graph with a malformed schema.org value is a diagnostic.
 
 ### Validation layers
@@ -57,7 +59,7 @@ Rules have one of these stable severities:
 | warning | A recommended constraint is violated, compatibility is uncertain, or a feature may be degraded. | does not fail |
 | info | Non-blocking advice or an observation that requires human review. | does not fail |
 
-Severity describes the rule result, not whether the tool ran. Execution errors therefore do not have a severity. The fail-on option accepts error, warning, info, or none and changes the lowest diagnostic severity that fails a run; the default is error.
+Severity describes the rule result, not whether the tool ran. Execution errors therefore do not have a severity. The severity option controls which diagnostics are written to standard output; it does not change rule evaluation or execution-error reporting. Diagnostics hidden by the severity option still participate in exit-status evaluation. The fail-on option accepts error, warning, info, or none and changes the lowest diagnostic severity that fails a run; the default is error.
 
 ## 5. Exit codes
 
@@ -69,13 +71,15 @@ Severity describes the rule result, not whether the tool ran. Execution errors t
 
 Code 2 takes precedence over code 1, even if diagnostics were also emitted. No other public exit code is defined; unexpected internal failures also return 2 and include a concise execution-error message.
 
-## 6. Output order
+## 6. Diagnostic output
 
-Human-readable and machine-readable output MUST use the same deterministic order:
+The text and JSON formats contain diagnostics only. Execution errors are not included in either diagnostic format and are written separately to standard error. Text output contains one diagnostic per line and does not include summary counts. JSON output is an unversioned array of diagnostic objects and does not include an envelope or summary. Each JSON diagnostic object contains source, location, rule_id, severity, and message; location is null when unavailable.
+
+Both diagnostic formats MUST use the same deterministic order:
 
 1. inputs in operand order; within a directory or glob, normalized path in Unicode code-point order;
 2. documents or JSON-LD blocks in source order;
 3. diagnostics by start location (line, then column; missing locations last);
 4. Rule ID in ascending bytewise order as the final tie-breaker.
 
-An execution error associated with an input occupies that input's position. Fatal command-usage errors precede all input output, and a final output-write or internal error is last. Summary counts are emitted after all individual records and do not affect their ordering. Implementations MAY process inputs in parallel, but MUST buffer results as needed to preserve this order.
+This ordering applies only among diagnostics. Execution errors do not occupy positions in the diagnostic sequence, and no relative ordering is guaranteed between a diagnostic on standard output and an execution error on standard error. Implementations MAY process inputs in parallel, but MUST buffer diagnostics as needed to preserve their deterministic order.
