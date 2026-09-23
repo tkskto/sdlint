@@ -184,11 +184,13 @@ These options are practical and can be added to the Reporter and Exit Policy wit
 - `--max-warnings N`: return exit code 1 if warnings exceed N
 - `--quiet`: display only errors while still evaluating all severities
 - `--output-file PATH`: atomically write the report instead of using stdout
-- `--format json`: produce stable, versioned JSON
+- --format json: currently produces an unversioned array containing diagnostics only
 - `--no-color`: support non-TTY output and log collection
 - `--stdin-filename PATH`: give stdin a virtual name for format detection, overrides, and diagnostic display
 
 `--quiet` controls presentation, not rule evaluation. Generate warning diagnostics before filtering the display so that the summary and `--max-warnings` retain consistent semantics.
+
+The current JSON contract has no versioned envelope, execution-error records, or summary. A future versioned JSON format requires a separate compatibility decision and must not be introduced implicitly as part of another reporter feature.
 
 ## Rule Discoverability
 
