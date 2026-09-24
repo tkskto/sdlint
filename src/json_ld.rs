@@ -190,34 +190,35 @@ fn validate_node_properties(
     node_list: &mut Vec<JsonLdNode>,
     structural_diagnostic_list: &mut Vec<JsonLdStructuralDiagnostic>,
 ) {
-    if !properties.contains_key("@context")
-        && let Some(severity) =
+    if !properties.contains_key("@context") {
+        if let Some(severity) =
             resolve_rule_severity(JSONLD_CONTEXT_REQUIRED_RULE_ID, Severity::Error)
-    {
-        structural_diagnostic_list.push(JsonLdStructuralDiagnostic {
-            top_level_value_index,
-            rule_id: JSONLD_CONTEXT_REQUIRED_RULE_ID,
-            severity,
-            message: format!(
-                "JSON-LD object {} is missing @context",
-                top_level_value_index + 1
-            ),
-        });
+        {
+            structural_diagnostic_list.push(JsonLdStructuralDiagnostic {
+                top_level_value_index,
+                rule_id: JSONLD_CONTEXT_REQUIRED_RULE_ID,
+                severity,
+                message: format!(
+                    "JSON-LD object {} is missing @context",
+                    top_level_value_index + 1
+                ),
+            });
+        }
     }
-    if !properties.contains_key("@type")
-        && !properties.contains_key("@graph")
-        && let Some(severity) =
+    if !properties.contains_key("@type") && !properties.contains_key("@graph") {
+        if let Some(severity) =
             resolve_rule_severity(JSONLD_TYPE_RECOMMENDED_RULE_ID, Severity::Warning)
-    {
-        structural_diagnostic_list.push(JsonLdStructuralDiagnostic {
-            top_level_value_index,
-            rule_id: JSONLD_TYPE_RECOMMENDED_RULE_ID,
-            severity,
-            message: format!(
-                "JSON-LD object {} is missing @type",
-                top_level_value_index + 1
-            ),
-        });
+        {
+            structural_diagnostic_list.push(JsonLdStructuralDiagnostic {
+                top_level_value_index,
+                rule_id: JSONLD_TYPE_RECOMMENDED_RULE_ID,
+                severity,
+                message: format!(
+                    "JSON-LD object {} is missing @type",
+                    top_level_value_index + 1
+                ),
+            });
+        }
     }
 
     node_list.push(JsonLdNode {
