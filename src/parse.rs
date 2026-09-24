@@ -5,16 +5,10 @@ use thiserror::Error;
 use crate::input::{SourceFormat, SourceOrigin, SourceText};
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct StructuredData {
+pub struct ParsedJsonLdDocument {
     pub origin: SourceOrigin,
     pub json_ld_index: usize,
-    pub value: Value,
-}
-
-impl StructuredData {
-    pub fn source_with_json_ld_number(&self) -> String {
-        format_source_with_json_ld_number(&self.origin, self.json_ld_index)
-    }
+    pub top_level_value: Value,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
@@ -25,14 +19,16 @@ pub enum ParseError {
     InvalidTopLevel { input: String },
 }
 
-pub fn parse_source_text(source_text: &SourceText) -> Vec<Result<StructuredData, ParseError>> {
+pub fn parse_source_text(
+    source_text: &SourceText,
+) -> Vec<Result<ParsedJsonLdDocument, ParseError>> {
     match source_text.format {
         SourceFormat::Json => vec![parse_json(source_text, 0)],
         SourceFormat::Html => parse_html(source_text),
     }
 }
 
-fn parse_html(source_text: &SourceText) -> Vec<Result<StructuredData, ParseError>> {
+fn parse_html(source_text: &SourceText) -> Vec<Result<ParsedJsonLdDocument, ParseError>> {
     let selector = Selector::parse("script").expect("the static script selector must be valid");
     let html = Html::parse_document(&source_text.text);
     let mut parsed_json_ld_list = Vec::new();
@@ -59,24 +55,24 @@ fn parse_html(source_text: &SourceText) -> Vec<Result<StructuredData, ParseError
 fn parse_json(
     source_text: &SourceText,
     json_ld_index: usize,
-) -> Result<StructuredData, ParseError> {
-    let value = serde_json::from_str::<Value>(&source_text.text).map_err(|error| {
+) -> Result<ParsedJsonLdDocument, ParseError> {
+    let top_level_value = serde_json::from_str::<Value>(&source_text.text).map_err(|error| {
         ParseError::InvalidJson {
             input: format_source_with_json_ld_number(&source_text.origin, json_ld_index),
             message: error.to_string(),
         }
     })?;
 
-    if !matches!(value, Value::Object(_) | Value::Array(_)) {
+    if !matches!(top_level_value, Value::Object(_) | Value::Array(_)) {
         return Err(ParseError::InvalidTopLevel {
             input: format_source_with_json_ld_number(&source_text.origin, json_ld_index),
         });
     }
 
-    Ok(StructuredData {
+    Ok(ParsedJsonLdDocument {
         origin: source_text.origin.clone(),
         json_ld_index,
-        value,
+        top_level_value,
     })
 }
 
@@ -96,10 +92,10 @@ mod tests {
             text: r#"{"@context":"https://schema.org"}"#.into(),
         };
 
-        let structured_data = parse_source_text(&source_text).remove(0).unwrap();
+        let parsed_document = parse_source_text(&source_text).remove(0).unwrap();
 
-        assert_eq!(structured_data.json_ld_index, 0);
-        assert!(structured_data.value.is_object());
+        assert_eq!(parsed_document.json_ld_index, 0);
+        assert!(parsed_document.top_level_value.is_object());
     }
 
     #[test]

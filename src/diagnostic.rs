@@ -9,6 +9,8 @@ pub enum Severity {
     Error,
 }
 
+pub(crate) type RuleSeverityResolver<'a> = dyn Fn(&str, Severity) -> Option<Severity> + 'a;
+
 impl fmt::Display for Severity {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter.write_str(match self {
