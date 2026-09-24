@@ -3,6 +3,7 @@ mod cli;
 mod config;
 mod diagnostic;
 mod input;
+mod json_ld;
 mod lint;
 mod parse;
 mod report;

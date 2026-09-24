@@ -1,34 +1,21 @@
-use serde_json::{Map, Value};
-
-use crate::diagnostic::{Diagnostic, Severity};
+use crate::{
+    diagnostic::{Diagnostic, RuleSeverityResolver, Severity},
+    json_ld::{self, JsonLdNode},
+};
 
 mod article;
 mod definitions;
 
-pub(crate) const JSONLD_CONTEXT_REQUIRED_RULE_ID: &str = "core/jsonld-context-required";
-pub(crate) const JSONLD_OBJECT_REQUIRED_RULE_ID: &str = "core/jsonld-object-required";
-pub(crate) const JSONLD_TYPE_RECOMMENDED_RULE_ID: &str = "core/jsonld-type-recommended";
-
-const CORE_RULE_IDS: &[&str] = &[
-    JSONLD_CONTEXT_REQUIRED_RULE_ID,
-    JSONLD_OBJECT_REQUIRED_RULE_ID,
-    JSONLD_TYPE_RECOMMENDED_RULE_ID,
-];
-
 pub(crate) fn known_rule_ids() -> Vec<&'static str> {
-    CORE_RULE_IDS
+    json_ld::CORE_RULE_IDS
         .iter()
         .copied()
         .chain(definitions::ALL.iter().map(|rule| rule.id))
         .collect()
 }
 
-pub(crate) type RuleSeverityResolver<'a> = dyn Fn(&str, Severity) -> Option<Severity> + 'a;
-
 pub(crate) struct RuleContext<'a> {
-    source: &'a str,
-    object_index: usize,
-    object: &'a Map<String, Value>,
+    node: &'a JsonLdNode,
 }
 
 pub(crate) enum Condition {
@@ -47,17 +34,11 @@ pub(crate) struct RuleDefinition {
     message: &'static str,
 }
 
-pub(crate) fn check_object(
-    source: &str,
-    object_index: usize,
-    object: &Map<String, Value>,
+pub(crate) fn check_node(
+    node: &JsonLdNode,
     resolve_rule_severity: &RuleSeverityResolver<'_>,
 ) -> Vec<Diagnostic> {
-    let context = RuleContext {
-        source,
-        object_index,
-        object,
-    };
+    let context = RuleContext { node };
 
     definitions::ALL
         .iter()
@@ -70,13 +51,13 @@ pub(crate) fn check_object(
             }
 
             Some(Diagnostic::new(
-                context.source,
+                context.node.source_with_json_ld_number(),
                 rule.id,
                 severity,
                 format!(
                     "{} (JSON-LD object {})",
                     rule.message,
-                    context.object_index + 1
+                    context.node.top_level_value_index() + 1
                 ),
             ))
         })
@@ -86,7 +67,7 @@ pub(crate) fn check_object(
 fn matches_condition(condition: &Condition, context: &RuleContext<'_>) -> bool {
     match condition {
         Condition::TargetTypes(expected_types) => {
-            object_types(context.object).into_iter().any(|actual_type| {
+            context.node.type_list().into_iter().any(|actual_type| {
                 expected_types
                     .iter()
                     .any(|expected| type_matches(actual_type, expected))
@@ -97,15 +78,7 @@ fn matches_condition(condition: &Condition, context: &RuleContext<'_>) -> bool {
 
 fn matches_assertion(assertion: &Assertion, context: &RuleContext<'_>) -> bool {
     match assertion {
-        Assertion::PropertyPresent(property) => context.object.contains_key(*property),
-    }
-}
-
-fn object_types(object: &Map<String, Value>) -> Vec<&str> {
-    match object.get("@type") {
-        Some(Value::String(value)) => vec![value],
-        Some(Value::Array(values)) => values.iter().filter_map(Value::as_str).collect(),
-        _ => Vec::new(),
+        Assertion::PropertyPresent(property) => context.node.has_property(property),
     }
 }
 

@@ -77,6 +77,10 @@ Unit tests for deterministic input expansion and readers live alongside the impl
 | --- | --- |
 | src/cli.rs | Command-line arguments and accepted option values. |
 | src/input.rs | Input expansion, ordering, deduplication, formats, and readers. |
+| src/parse.rs | JSON syntax parsing and JSON-LD script extraction from HTML. |
+| src/json_ld.rs | Structural JSON-LD validation and the JsonLdDocument and JsonLdNode intermediate model. |
+| src/rules.rs | Schema.org and search-feature rule evaluation over JsonLdNode values. |
+| src/lint.rs | Structural and feature diagnostic integration and deterministic ordering. |
 | src/app.rs | Application orchestration. |
 | src/main.rs | Binary boundary and exit-code conversion. |
 | tests/ | CLI integration tests. |

@@ -3,8 +3,8 @@ use std::io::{self, Read, Write};
 use crate::{
     cli::{Cli, FailOn},
     config::LoadedConfig,
-    diagnostic::Diagnostic,
-    input, lint, parse, report,
+    diagnostic::{Diagnostic, Severity},
+    input, json_ld, lint, parse, report,
 };
 
 /// The outcome of a library run. The CLI maps this value to a process exit code.
@@ -101,9 +101,9 @@ fn process_source_text(
     };
 
     let mut had_parse_error = false;
-    for structured_data in parse::parse_source_text(&source_text) {
-        let structured_data = match structured_data {
-            Ok(structured_data) => structured_data,
+    for parsed_document in parse::parse_source_text(&source_text) {
+        let parsed_document = match parsed_document {
+            Ok(parsed_document) => parsed_document,
             Err(error) => {
                 writeln!(stderr, "sdlint: {error}")?;
                 had_parse_error = true;
@@ -111,11 +111,11 @@ fn process_source_text(
             }
         };
 
-        let structured_data_diagnostic_list =
-            lint::lint_structured_data(&structured_data, &|rule_id, built_in_severity| {
-                loaded_config.resolve_rule_severity(override_index, rule_id, built_in_severity)
-            });
-        diagnostic_list.extend(structured_data_diagnostic_list);
+        let resolve_rule_severity = |rule_id: &str, built_in_severity: Severity| {
+            loaded_config.resolve_rule_severity(override_index, rule_id, built_in_severity)
+        };
+        let validation = json_ld::validate_parsed_document(parsed_document, &resolve_rule_severity);
+        diagnostic_list.extend(lint::lint_json_ld(&validation, &resolve_rule_severity));
     }
 
     Ok(had_parse_error)

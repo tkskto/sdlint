@@ -37,11 +37,15 @@ This boundary is intentional: malformed JSON is an execution error because no JS
 
 ### Validation layers
 
-sdlint MUST keep structural JSON-LD validation separate from vocabulary and feature rules. Structural validation checks whether the input has the project-required JSON-LD shape, such as an object or array of objects and the presence of a context. Vocabulary and feature rules check whether a structurally valid graph satisfies schema.org constraints or the requirements of a specific search feature.
+sdlint MUST keep JSON and HTML parsing, structural JSON-LD validation, vocabulary and feature rules, and reporting as separate processing stages. Parsing checks JSON syntax, enforces the object-or-array document boundary, and extracts application/ld+json script elements from HTML in source order. Structural validation then checks each top-level value and constructs a JsonLdDocument containing the JsonLdNode values that vocabulary and feature rules can evaluate.
 
 These layers have different meanings and MUST NOT be combined into one growing generic rule function. For example, a missing @context is a structural validation error in the initial sdlint policy, while a missing headline for a feature that recommends or requires it belongs to that feature's rule family and may be an error or warning according to the provider's requirement.
 
-The structural validation layer SHOULD produce a validated intermediate model, such as JsonLdDocument containing JsonLdNode values, before vocabulary and feature rules run. Rules MUST consume that model instead of duplicating low-level JSON shape checks. The initial implementation is intentionally smaller than this target architecture; it provides only the baseline checks needed for the first linting slice and MUST be refactored before additional rule families are added.
+JsonLdDocument and JsonLdNode preserve the input source, JSON-LD block number, and original top-level object number. JsonLdNode exposes read-only rule inputs such as its type values and property presence without exposing the underlying JSON object to feature rules. Vocabulary and feature rules MUST consume JsonLdNode instead of serde JSON values or maps and MUST NOT duplicate top-level JSON shape checks.
+
+Structural diagnostics do not prevent an otherwise evaluable object from reaching vocabulary and feature rules. Lint orchestration combines both diagnostic streams, preserves input, block, and object order, and orders diagnostics for the same object by location and then Rule ID as defined in section 6.
+
+The current structural stage validates top-level objects only. It does not recursively inspect nodes in @graph, nested schema.org nodes, or property value types, and the intermediate model does not provide source positions or JSON paths.
 
 The distinction between these layers is based on the following sources, verified 2026-08-20 (UTC):
 
